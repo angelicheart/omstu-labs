@@ -2,7 +2,7 @@ namespace SpaceBattle.Lib.Test;
 public class MoveTests
 {
     [Fact]
-    public void MoveTest1()
+    public void MoveTestPositive()
     {
         // Arrange
         var movable = new Mock<IMovable>();
@@ -22,7 +22,7 @@ public class MoveTests
     }
 
     [Fact]
-    public void MoveTest2()
+    public void MoveWithoutPosition()
     {
         // Arrange
         var movable = new Mock<IMovable>();
@@ -40,7 +40,7 @@ public class MoveTests
     }
 
     [Fact]
-    public void MoveTest3()
+    public void MoveWithoutVelocity()
     {
         // Arrange
         var movable = new Mock<IMovable>();
@@ -58,7 +58,7 @@ public class MoveTests
     }
 
     [Fact]
-    public void MoveTest4()
+    public void MoveBlocked()
     {
         // Arrange
         var movable = new Mock<IMovable>();
