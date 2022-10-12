@@ -66,7 +66,7 @@ public class RotateTests
             .Returns(new Angle(Math.PI / 2)).Verifiable();
 
         rotatable.SetupGet(r => r.angleVelocty)
-            .Throws(new Exception());
+            .Returns(Math.PI / 4).Verifiable();
 
         rotatable.SetupSet(r => r.Direction = It.IsAny<Angle>()).Throws(new Exception());
 
