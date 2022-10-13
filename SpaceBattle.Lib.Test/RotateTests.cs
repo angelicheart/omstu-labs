@@ -7,10 +7,10 @@ public class RotateTests
         // Arrange
         var rotatable = new Mock<IRotatable>();
         rotatable.SetupGet(r => r.Direction)
-            .Returns(new Angle(Math.PI / 2)).Verifiable();
+            .Returns(new Angle(90)).Verifiable();
 
         rotatable.SetupGet(r => r.angleVelocty)
-            .Returns(Math.PI / 4).Verifiable();
+            .Returns(45).Verifiable();
 
         var rotateCommand = new RotateCommand(rotatable.Object);
 
@@ -18,7 +18,7 @@ public class RotateTests
         rotateCommand.Execute();
 
         // Assert
-        rotatable.VerifySet(r => r.Direction = new Angle(3 * Math.PI / 4));
+        rotatable.VerifySet(r => r.Direction = new Angle(135));
     }
 
     [Fact]
@@ -30,7 +30,7 @@ public class RotateTests
             .Throws(new Exception());
 
         rotatable.SetupGet(r => r.angleVelocty)
-            .Returns(Math.PI / 4).Verifiable();
+            .Returns(45).Verifiable();
 
         var rotateCommand = new RotateCommand(rotatable.Object);
 
@@ -45,7 +45,7 @@ public class RotateTests
         // Arrange
         var rotatable = new Mock<IRotatable>();
         rotatable.SetupGet(r => r.Direction)
-            .Returns(new Angle(Math.PI / 2)).Verifiable();
+            .Returns(new Angle(90)).Verifiable();
 
         rotatable.SetupGet(r => r.angleVelocty)
             .Throws(new Exception());
@@ -63,10 +63,10 @@ public class RotateTests
         // Arrange
         var rotatable = new Mock<IRotatable>();
         rotatable.SetupGet(r => r.Direction)
-            .Returns(new Angle(Math.PI / 2)).Verifiable();
+            .Returns(new Angle(90)).Verifiable();
 
         rotatable.SetupGet(r => r.angleVelocty)
-            .Returns(Math.PI / 4).Verifiable();
+            .Returns(45).Verifiable();
 
         rotatable.SetupSet(r => r.Direction = It.IsAny<Angle>()).Throws(new Exception());
 

@@ -2,16 +2,16 @@ namespace SpaceBattle.Lib
 {
     public class Angle
     {
-        public double angle { get; set; }
+        public int angle { get; set; }
 
-        public Angle(double Direction)
+        public Angle(int Direction)
         {
             angle = Direction;
         }
 
-        public Angle Rotate(double avelocity)
+        public Angle Rotate(int avelocity)
         {
-            return new Angle((angle + avelocity) % (2 * Math.PI));
+            return new Angle((angle + avelocity) % 360);
         }
 
         public override bool Equals(object obj)
