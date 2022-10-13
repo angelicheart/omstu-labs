@@ -9,7 +9,7 @@ public class MoveTests
         movable.SetupGet(m => m.position)
             .Returns(new Vector(12, 5)).Verifiable();
 
-        movable.SetupGet(x => x.velocity)
+        movable.SetupGet(m => m.velocity)
             .Returns(new Vector(-7, 3)).Verifiable();
 
         var moveCommand = new MoveCommand(movable.Object);
@@ -29,7 +29,7 @@ public class MoveTests
         movable.SetupGet(m => m.position)
             .Throws(new Exception());
 
-        movable.SetupGet(x => x.velocity)
+        movable.SetupGet(m => m.velocity)
             .Returns(new Vector(-7, 3)).Verifiable();
         
         var moveCommand = new MoveCommand(movable.Object);
@@ -47,7 +47,7 @@ public class MoveTests
         movable.SetupGet(m => m.position)
             .Returns(new Vector(12, 5)).Verifiable();
 
-        movable.SetupGet(x => x.velocity)
+        movable.SetupGet(m => m.velocity)
             .Throws(new Exception());
         
         var moveCommand = new MoveCommand(movable.Object);
@@ -65,7 +65,7 @@ public class MoveTests
         movable.SetupGet(m => m.position)
             .Returns(new Vector(12, 5)).Verifiable();
 
-        movable.SetupGet(x => x.velocity)
+        movable.SetupGet(m => m.velocity)
             .Returns(new Vector(-7, 3)).Verifiable();
 
         movable.SetupSet(m => m.position = It.IsAny<Vector>()).Throws(new Exception());
