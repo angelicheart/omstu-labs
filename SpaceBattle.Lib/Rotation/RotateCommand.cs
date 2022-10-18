@@ -9,7 +9,7 @@ namespace SpaceBattle.Lib
         }
         public void Execute() 
         {
-            ObjThatRotate.Direction = ObjThatRotate.Direction.Rotate(ObjThatRotate.angleVelocty);
+            ObjThatRotate.Direction += ObjThatRotate.angleVelocty;
         }
     }
 }

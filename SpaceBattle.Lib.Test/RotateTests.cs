@@ -10,7 +10,7 @@ public class RotateTests
             .Returns(new Angle(90)).Verifiable();
 
         rotatable.SetupGet(r => r.angleVelocty)
-            .Returns(45).Verifiable();
+            .Returns(new Angle(45)).Verifiable();
 
         var rotateCommand = new RotateCommand(rotatable.Object);
 
@@ -30,7 +30,7 @@ public class RotateTests
             .Throws(new Exception());
 
         rotatable.SetupGet(r => r.angleVelocty)
-            .Returns(45).Verifiable();
+            .Returns(new Angle(45)).Verifiable();
 
         var rotateCommand = new RotateCommand(rotatable.Object);
 
@@ -66,7 +66,7 @@ public class RotateTests
             .Returns(new Angle(90)).Verifiable();
 
         rotatable.SetupGet(r => r.angleVelocty)
-            .Returns(45).Verifiable();
+            .Returns(new Angle(45)).Verifiable();
 
         rotatable.SetupSet(r => r.Direction = It.IsAny<Angle>()).Throws(new Exception());
 
