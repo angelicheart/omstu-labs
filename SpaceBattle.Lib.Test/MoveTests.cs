@@ -31,7 +31,7 @@ public class MoveTests
 
         movable.SetupGet(m => m.velocity)
             .Returns(new Vector(-7, 3)).Verifiable();
-        
+
         var moveCommand = new MoveCommand(movable.Object);
 
         // Act
@@ -49,7 +49,7 @@ public class MoveTests
 
         movable.SetupGet(m => m.velocity)
             .Throws(new Exception());
-        
+
         var moveCommand = new MoveCommand(movable.Object);
 
         // Act
