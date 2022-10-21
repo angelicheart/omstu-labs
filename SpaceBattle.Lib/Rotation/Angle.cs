@@ -7,16 +7,18 @@ namespace SpaceBattle.Lib
         public Angle(int n, int d)
         {
             if ((double)n / d > 360)
-            {
-                n /= GCD(n, d);
-                d /= GCD(n, d);
+            {   
+                int gcd = GCD(n, d); 
+                n /= gcd;
+                d /= gcd;
                 N = n % (360 * d);
                 D = d;
             }
             else
             {
-                N = n / GCD(n, d);
-                D = d / GCD(n, d);
+                int gcd = GCD(n, d);
+                N = n / gcd;
+                D = d / gcd;
             }
         }
 
@@ -26,7 +28,7 @@ namespace SpaceBattle.Lib
             D = 1;
         }
 
-        public int GCD(int n, int d)
+        private int GCD(int n, int d)
         {
             int numerator = n;
             while (n != d)

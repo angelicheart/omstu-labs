@@ -5,5 +5,3 @@ namespace SpaceBattle.Lib
         void Execute();
     }
 }
-
-

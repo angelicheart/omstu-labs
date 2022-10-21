@@ -54,4 +54,3 @@ public class AngleTests
         rotatable.VerifySet(r => r.Direction = new Angle(1640, 17));
     }
 }
-
