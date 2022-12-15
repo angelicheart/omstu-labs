@@ -11,9 +11,12 @@ public class StartMoveCommand : ICommand
 
     public void Execute()
     {
-        IoC.Resolve<ICommand>("Game.SetProperty", ObjThatMove.obj, "Velocity", ObjThatMove.velocity);
-        ICommand command = IoC.Resolve<ICommand>("Game.Event.Move", ObjThatMove.obj);
-        IoC.Resolve<ICommand>("Game.SetProperty", ObjThatMove.obj, "Move", command).Execute();
-        IoC.Resolve<ICommand>("Game.Queue.Push", IoC.Resolve<Queue<Hwdtech.ICommand>>("Game.Queue"), command).Execute();
+        IoC.Resolve<ICommand>("Game.SetProperty", ObjThatMove.obj, "Velocity", ObjThatMove.velocity).Execute();
+
+        var MovableAdapter = IoC.Resolve<IMovable>("Game.Adapters.Movable", ObjThatMove.obj);
+        var MoveCommand = IoC.Resolve<ICommand>("Game.Event.Move", MovableAdapter);
+
+        IoC.Resolve<ICommand>("Game.SetProperty", ObjThatMove.obj, "Move", MoveCommand).Execute();
+        IoC.Resolve<ICommand>("Game.Queue.Push", ObjThatMove.queue, MoveCommand).Execute();
     }
 }
