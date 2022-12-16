@@ -11,7 +11,7 @@ public class StartMoveCommand : ICommand
 
     public void Execute()
     {
-        IoC.Resolve<ICommand>("Game.SetProperty", ObjThatMove.obj, "Velocity", ObjThatMove.velocity).Execute();
+        IoC.Resolve<ICommand>("Game.SetProperty", ObjThatMove.obj, "velocity", ObjThatMove.velocity).Execute();
 
         var MovableAdapter = IoC.Resolve<IMovable>("Game.Adapters.Movable", ObjThatMove.obj);
         var MoveCommand = IoC.Resolve<ICommand>("Game.Event.Move", MovableAdapter);

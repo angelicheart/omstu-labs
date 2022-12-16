@@ -45,7 +45,7 @@ public class StartMoveCommandTests
     }
 
     [Fact]
-    public void StartMoveCommandNullException()
+    public void StartMoveCommandVelocityException()
     {   
         // Arrange
         var MoveStartable = new Mock<IMoveStartable>();
