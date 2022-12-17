@@ -29,19 +29,19 @@ public class EndMoveCommandTests
     [Fact]
     public void EndMoveCommandPositive()
     {
-        //Arrange
+        // Arrange
         var MoveStopable = new Mock<IMoveStopable>();
-        var obj = new Mock<IUObject>();
+        MoveStopable.SetupGet(m => m.velocity).Returns(new Vector(5, 5)).Verifiable();
 
-        MoveStopable.SetupGet(m => m.obj).Returns(obj.Object).Verifiable();
+        var obj = new Mock<IUObject>();
         MoveStopable.SetupGet(m => m.obj).Returns(obj.Object).Verifiable();
 
         ICommand EndMoveCommand = new EndMoveCommand(MoveStopable.Object);
 
-        //Act
+        // Act
         EndMoveCommand.Execute();
 
-        //Assert
+        // Assert
         MoveStopable.VerifyAll();
     }
 }
