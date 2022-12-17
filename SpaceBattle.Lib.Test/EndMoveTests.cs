@@ -44,4 +44,38 @@ public class EndMoveCommandTests
         // Assert
         MoveStopable.VerifyAll();
     }
+
+    [Fact]
+    public void EndMoveCommandVelocityException()
+    {
+        // Arrange
+        var MoveStopable = new Mock<IMoveStopable>();
+        MoveStopable.SetupGet(m => m.velocity).Throws(new Exception()).Verifiable();
+
+        var obj = new Mock<IUObject>();
+        MoveStopable.SetupGet(m => m.obj).Returns(obj.Object).Verifiable();
+
+        ICommand EndMoveCommand = new EndMoveCommand(MoveStopable.Object);
+
+        // Act
+        // Assert
+        Assert.Throws<Exception>(() => EndMoveCommand.Execute());
+    }
+
+    [Fact]
+    public void EndMoveCommandObjException()
+    {
+        // Arrange
+        var MoveStopable = new Mock<IMoveStopable>();
+        MoveStopable.SetupGet(m => m.velocity).Returns(new Vector(5, 5)).Verifiable();
+
+        var obj = new Mock<IUObject>();
+        MoveStopable.SetupGet(m => m.obj).Throws(new Exception()).Verifiable();
+
+        ICommand EndMoveCommand = new EndMoveCommand(MoveStopable.Object);
+
+        // Act
+        // Assert
+        Assert.Throws<Exception>(() => EndMoveCommand.Execute());
+    }
 }
