@@ -13,6 +13,7 @@ public class CheckCollisionCommandTests
     [Fact]
     public void CollisionCheckTrue()
     {
+        // Arrange
         var obj1 = new Mock<IUObject>();
         var obj2 = new Mock<IUObject>();
 
@@ -20,12 +21,15 @@ public class CheckCollisionCommandTests
 
         ICommand CollisionCheckCommand = new CollisionCheckCommand(obj1.Object, obj2.Object);
 
+        // Act
+        // Assert
         Assert.ThrowsAny<Exception>(() => CollisionCheckCommand.Execute());
     }
 
     [Fact]
     public void CollisionCheckFalse()
-    {
+    {   
+        // Arrange
         var obj1 = new Mock<IUObject>();
         var obj2 = new Mock<IUObject>();
 
@@ -33,18 +37,23 @@ public class CheckCollisionCommandTests
 
         ICommand CollisionCheckCommand = new CollisionCheckCommand(obj1.Object, obj2.Object);
 
+        // Act
+        // Assert
         CollisionCheckCommand.Execute();
     }
 
     [Fact]
     public void CollisionCheckNull()
     {
+        // Arrange
         var obj1 = new Mock<IUObject>();
 
         IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Collision.CheckWithTree", (object[] args) => new NullReferenceException()).Execute();
 
         ICommand CollisionCheckCommand = new CollisionCheckCommand(obj1.Object, null);
 
+        // Act
+        // Assert
         Assert.ThrowsAny<Exception>(() => CollisionCheckCommand.Execute());
     }
 }
