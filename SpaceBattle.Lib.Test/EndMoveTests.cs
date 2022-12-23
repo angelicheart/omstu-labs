@@ -9,6 +9,9 @@ public class EndMoveCommandTests
         var command = new Mock<SpaceBattle.Lib.ICommand>();
         command.Setup(c => c.Execute());
 
+        var CommandStrategy = new Mock<IStrategy>();
+        CommandStrategy.Setup(c => c.Execute(It.IsAny<object[]>())).Returns(command.Object);;
+
         var EmptyStrategy = new Mock<IStrategy>();
         EmptyStrategy.Setup(c => c.Execute()).Returns(command.Object);
 
@@ -18,7 +21,7 @@ public class EndMoveCommandTests
         var InjectableStrategy = new Mock<IStrategy>();
         InjectableStrategy.Setup(c => c.Execute(It.IsAny<object[]>())).Returns(inject.Object);
 
-        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.RemoveProperty", (object[] args) => new RemovePropertyStrategy().Execute(args)).Execute();
+        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.RemoveProperty", (object[] args) => CommandStrategy.Object.Execute(args)).Execute();
         IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.GetProperty", (object[] args) => InjectableStrategy.Object.Execute(args)).Execute();
         IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.EmptyCommand", (object[] args) => EmptyStrategy.Object.Execute(args)).Execute();
     }
