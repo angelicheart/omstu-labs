@@ -7,7 +7,7 @@ public class CheckCollisionCommandTests
         new InitScopeBasedIoCImplementationCommand().Execute();
         IoC.Resolve<Hwdtech.ICommand>("Scopes.Current.Set", IoC.Resolve<object>("Scopes.New", IoC.Resolve<object>("Scopes.Root"))).Execute();
 
-        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Collision.Tree", (object[] args) => new Mock<IDictionary<double, object>>().Object).Execute();
+        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Collision.Tree", (object[] args) => new Mock<IDictionary<int, object>>().Object).Execute();
     }
 
     [Fact]
@@ -17,7 +17,10 @@ public class CheckCollisionCommandTests
         var obj1 = new Mock<IUObject>();
         var obj2 = new Mock<IUObject>();
 
-        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Collision.CheckWithTree", (object[] args) => (object) true).Execute();
+        var CheckReturnsTrue = new Mock<IStrategy>();
+        CheckReturnsTrue.Setup(crt => crt.Execute(obj1.Object, obj2.Object)).Returns((object) true);
+
+        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Collision.CheckWithTree", (object[] args) => CheckReturnsTrue.Object.Execute(args)).Execute();
 
         ICommand CollisionCheckCommand = new CollisionCheckCommand(obj1.Object, obj2.Object);
 
@@ -33,7 +36,10 @@ public class CheckCollisionCommandTests
         var obj1 = new Mock<IUObject>();
         var obj2 = new Mock<IUObject>();
 
-        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Collision.CheckWithTree", (object[] args) => (object) false).Execute();
+        var CheckReturnsTrue = new Mock<IStrategy>();
+        CheckReturnsTrue.Setup(crt => crt.Execute(obj1.Object, obj2.Object)).Returns((object) false);
+
+        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Collision.CheckWithTree", (object[] args) => CheckReturnsTrue.Object.Execute(args)).Execute();
 
         ICommand CollisionCheckCommand = new CollisionCheckCommand(obj1.Object, obj2.Object);
 
@@ -48,7 +54,10 @@ public class CheckCollisionCommandTests
         // Arrange
         var obj1 = new Mock<IUObject>();
 
-        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Collision.CheckWithTree", (object[] args) => new NullReferenceException()).Execute();
+        var CheckReturnsTrue = new Mock<IStrategy>();
+        CheckReturnsTrue.Setup(crt => crt.Execute(obj1.Object, null)).Returns(new NullReferenceException());
+
+        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Collision.CheckWithTree", (object[] args) => CheckReturnsTrue.Object.Execute(args)).Execute();
 
         ICommand CollisionCheckCommand = new CollisionCheckCommand(obj1.Object, null);
 
