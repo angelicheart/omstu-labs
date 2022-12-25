@@ -11,9 +11,12 @@ public class CollisionCheckCommand : ICommand
     
     public void Execute()
     {   
-        var CollisionSolutionTree = IoC.Resolve<IDictionary<int, object>>("Game.Collision.Tree");
+        var list1 = IoC.Resolve<List<int>>("Game.Collision.GetList", obj1);
+        var list2 = IoC.Resolve<List<int>>("Game.Collision.GetList", obj2);    
 
-        bool collision = IoC.Resolve<bool>("Game.Collision.CheckWithTree", obj1, obj2);
+        var dlist = IoC.Resolve<IEnumerable<int>>("Game.Collision.GetDeltas", list1, list2);     
+
+        bool collision = IoC.Resolve<bool>("Game.Collision.CheckWithTree", dlist);
 
         if (collision) throw new Exception("COLLISION!");
     }
