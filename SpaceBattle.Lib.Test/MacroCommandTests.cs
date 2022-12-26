@@ -21,6 +21,7 @@ public class MacroCommandTests
     [Fact]
     public void PositiveMacroCommandTest()
     {   
+        // Arrange
         var TestObj = new Mock<IUObject>();
         var Commands = new List<ICommand>();
 
@@ -28,19 +29,49 @@ public class MacroCommandTests
 
         StratList.ForEach(strat => Commands.Add(IoC.Resolve<ICommand>(strat, TestObj.Object)));
 
+        // Act
+        // Assert
         var MacroCommand = new MacroCommand(Commands);
+
         MacroCommand.Execute();
+    }
+
+    [Fact]  
+    public void MacroCommandNullTest() 
+    {
+        // Arrange
+        var MacroCommand = new MacroCommand(null);
+
+        // Act
+        // Assert
+        Assert.ThrowsAny<Exception>(() => MacroCommand.Execute());
+    }
+
+    [Fact]
+    public void MacroCommandListHasNullTest() 
+    {
+        // Arrange
+        var Command = new Mock<SpaceBattle.Lib.ICommand>();
+
+        var MacroCommand = new MacroCommand(new List<ICommand>{null!, Command.Object});
+
+        // Act
+        // Assert
+        Assert.ThrowsAny<Exception>(() => MacroCommand.Execute());
     }
 
     [Fact]
     public void PositiveMacroCommandStrategyTest()
     {   
+        // Arrange
         var TestObj = new Mock<IUObject>();
 
         var MacroCommandStrategy = new MacroCommandStrategy();
 
         ICommand MacroCommand = (ICommand) MacroCommandStrategy.Execute(new object[] {TestStrategyReturnsListOfOperations, TestObj.Object});
 
+        // Act
+        // Assert
         MacroCommand.Execute();
     }
 }
