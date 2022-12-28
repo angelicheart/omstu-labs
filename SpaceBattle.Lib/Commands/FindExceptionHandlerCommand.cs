@@ -23,6 +23,6 @@ public class FindExceptionCommand : ICommand
                 IoC.Resolve<IStrategy>("Game.Exception.FindHandlerWithTree", Command, Exception).Execute();
             }
         }
-        else throw new Exception("GAME ISNT RUNNING");
+        else throw new Exception("GAME ISNT CATCHES EXCEPTIONS");
     }
 }
