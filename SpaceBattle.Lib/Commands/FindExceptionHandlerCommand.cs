@@ -2,27 +2,36 @@ namespace SpaceBattle.Lib;
 
 public class FindExceptionCommand : ICommand
 {
-    private readonly ICommand Command;
+    private readonly Queue<ICommand> Commands;
+    public ICommand command;
     
-    public FindExceptionCommand(ICommand command)
+    public FindExceptionCommand(Queue<ICommand> commands)
     {
-        this.Command = command;
+        this.Commands = commands;
     }
 
     public void Execute()
     {
-        if (IoC.Resolve<bool>("Game.CatchesExceptions"))
+        while (IoC.Resolve<bool>("Game.CatchesExceptions"))
         {
             try
             {
-                this.Command.Execute();
+                this.command = this.Commands.Dequeue();
+            }
+            catch
+            {
+                break;
+            }
+
+            try
+            {
+                this.command.Execute();
             }
 
             catch (Exception Exception)
             {
-                IoC.Resolve<IStrategy>("Game.Exception.FindHandlerWithTree", Command, Exception).Execute();
+                IoC.Resolve<IStrategy>("Game.Exception.FindHandlerWithTree", this.command, Exception).Execute();
             }
         }
-        else throw new Exception("GAME ISNT CATCHES EXCEPTIONS");
     }
 }
