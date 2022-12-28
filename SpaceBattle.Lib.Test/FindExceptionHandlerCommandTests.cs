@@ -1,8 +1,8 @@
 namespace SpaceBattle.Lib.Test;
 
-public class FindExceptionCommandTests
+public class FindExceptionHandlerCommandTests
 {
-    public FindExceptionCommandTests()
+    public FindExceptionHandlerCommandTests()
     {
         new InitScopeBasedIoCImplementationCommand().Execute();
         IoC.Resolve<Hwdtech.ICommand>("Scopes.Current.Set", IoC.Resolve<object>("Scopes.New", IoC.Resolve<object>("Scopes.Root"))).Execute();
@@ -14,7 +14,7 @@ public class FindExceptionCommandTests
         var GameIsRunning = new Mock<IStrategy>();
         GameIsRunning.Setup(crt => crt.Execute(It.IsAny<object[]>())).Returns((object) true);
 
-        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.IsRunning", (object[] args) => GameIsRunning.Object.Execute(args)).Execute();
+        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.CatchesExceptions", (object[] args) => GameIsRunning.Object.Execute(args)).Execute();
 
         var CommandStrategy = new Mock<IStrategy>();
         CommandStrategy.Setup(s => s.Execute(It.IsAny<object[]>())).Throws(new Exception());
@@ -35,7 +35,7 @@ public class FindExceptionCommandTests
         var GameIsRunning = new Mock<IStrategy>();
         GameIsRunning.Setup(crt => crt.Execute(It.IsAny<object[]>())).Returns((object) true);
 
-        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.IsRunning", (object[] args) => GameIsRunning.Object.Execute(args)).Execute();
+        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.CatchesExceptions", (object[] args) => GameIsRunning.Object.Execute(args)).Execute();
 
         var ExceptionHandlerCommand = new Mock<IStrategy>();
 
@@ -58,7 +58,7 @@ public class FindExceptionCommandTests
         var GameIsRunning = new Mock<IStrategy>();
         GameIsRunning.Setup(crt => crt.Execute(It.IsAny<object[]>())).Returns((object) false);
 
-        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.IsRunning", (object[] args) => GameIsRunning.Object.Execute(args)).Execute();
+        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.CatchesExceptions", (object[] args) => GameIsRunning.Object.Execute(args)).Execute();
 
         var Command = new Mock<SpaceBattle.Lib.ICommand>();
         Command.Setup(c => c.Execute());

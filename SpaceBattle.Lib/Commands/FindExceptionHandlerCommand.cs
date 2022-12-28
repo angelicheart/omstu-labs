@@ -11,7 +11,7 @@ public class FindExceptionCommand : ICommand
 
     public void Execute()
     {
-        if (IoC.Resolve<bool>("Game.IsRunning"))
+        if (IoC.Resolve<bool>("Game.CatchesExceptions"))
         {
             try
             {
