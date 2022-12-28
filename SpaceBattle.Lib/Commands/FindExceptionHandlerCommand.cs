@@ -30,7 +30,7 @@ public class FindExceptionCommand : ICommand
 
             catch (Exception Exception)
             {
-                IoC.Resolve<IStrategy>("Game.Exception.FindHandlerWithTree", this.command.GetType(), Exception.GetType()).Execute();
+                IoC.Resolve<IStrategy>("Game.Exception.FindHandlerWithTree", this.command.GetHashCode(), Exception.GetHashCode()).Execute();
             }
         }
     }

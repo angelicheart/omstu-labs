@@ -14,21 +14,21 @@ public class FindExcHandlerWithTreeStrategyTests
         // Arrange
         var handler = new Mock<IStrategy>();
 
-        var ExceptionDict = new Mock<IDictionary<Exception, IStrategy>>();
-        ExceptionDict.Setup(ed => ed[It.IsAny<Exception>()]).Returns(handler.Object);
+        var ExceptionDict = new Mock<IDictionary<Int32, IStrategy>>();
+        ExceptionDict.Setup(ed => ed[It.IsAny<Int32>()]).Returns(handler.Object);
 
-        var HandlerDict = new Mock<IDictionary<ICommand, IDictionary<Exception, IStrategy>>>();
-        HandlerDict.Setup(hd => hd[It.IsAny<ICommand>()]).Returns(ExceptionDict.Object);
+        var HandlerDict = new Mock<IDictionary<Int32, IDictionary<Int32, IStrategy>>>();
+        HandlerDict.Setup(hd => hd[It.IsAny<Int32>()]).Returns(ExceptionDict.Object);
 
         IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "GetExceptionTree", (object[] args) => HandlerDict.Object).Execute();
 
-        var command = new Mock<ICommand>();
-        var exception = new Mock<Exception>();
+        var CommandHash = new Mock<ICommand>().GetHashCode();
+        var ExceptionHash = new Mock<Exception>().GetHashCode();
 
         var FindExcHandlerStrategy = new FindHandlerWithTreeStrategy();
 
-        var teststrategy = FindExcHandlerStrategy.Execute(new object[] {command.Object, exception.Object});
-        
+        var teststrategy = FindExcHandlerStrategy.Execute(new object[] {CommandHash, ExceptionHash});
+
         // Act
         // Assert
         Assert.NotNull(teststrategy);
