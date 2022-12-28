@@ -16,6 +16,7 @@ public class FindExceptionHandlerCommandTests
     [Fact]
     public void CommandNoThrowsExceptionTest()
     {
+        // Arrange
         var CommandsQueue = new Mock<Queue<ICommand>>();
 
         var Command1 = new Mock<ICommand>();
@@ -31,6 +32,8 @@ public class FindExceptionHandlerCommandTests
 
         var FindExceptionCommand = new FindExceptionCommand(CommandsQueue.Object);
         
+        // Act
+        // Assert
         FindExceptionCommand.Execute();
     }
 
@@ -53,6 +56,8 @@ public class FindExceptionHandlerCommandTests
 
         var FindExceptionCommand = new FindExceptionCommand(CommandsQueue.Object);
         
+        // Act
+        // Assert
         FindExceptionCommand.Execute();
     }
 }
