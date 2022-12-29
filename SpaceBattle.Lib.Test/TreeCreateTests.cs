@@ -17,12 +17,15 @@ public class TreeCreateTest
     [Fact]
     public void TreeCreationTest()
     {
+        // Arrange
         var path = @"../../../../SpaceBattle.Lib/Data/data.txt";
 
         var data = File.ReadLines(path);
         var list = data.Select(i => i.Split("; ").Select(int.Parse).ToList()).ToList();
         var tree = IoC.Resolve<IDictionary<int, object>>("Game.Tree.Build", list);
 
+        // Act
+        // Assert
         Assert.True(tree.ContainsKey(1));
         Assert.True(tree.ContainsKey(4));
         Assert.True(tree.ContainsKey(7));
