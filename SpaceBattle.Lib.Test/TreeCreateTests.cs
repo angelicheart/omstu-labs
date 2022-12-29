@@ -13,4 +13,24 @@ public class TreeCreateTest
 
         IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Tree.Build", (object[] args) => (TreeStrategy.Execute(args))).Execute();
     }
+
+    [Fact]
+    public void TreeCreationTest()
+    {
+        var path = @"../../../../SpaceBattle.Lib/Data/data.txt";
+
+        var data = File.ReadLines(path);
+        var list = data.Select(i => i.Split("; ").Select(int.Parse).ToList()).ToList();
+        var tree = IoC.Resolve<IDictionary<int, object>>("Game.Tree.Build", list);
+
+        Assert.True(tree.ContainsKey(1));
+        Assert.True(tree.ContainsKey(4));
+        Assert.True(tree.ContainsKey(7));
+
+        Assert.True(((IDictionary<int, object>) tree[1]).ContainsKey(2));
+        Assert.True(((IDictionary<int, object>) tree[1]).ContainsKey(4));
+        Assert.True(((IDictionary<int, object>) tree[1]).ContainsKey(8));
+
+        Assert.True(((IDictionary<int, object>) ((IDictionary<int, object>) tree[1])[2]).ContainsKey(3));
+    }
 }
