@@ -18,8 +18,6 @@ public class FindHandlerWithTreeStrategy : IStrategy
 
         IStrategy Handler = IoC.Resolve<IStrategy>("Game.Exception.GetEmptyStrategy"); 
 
-        ExceptionDict.GetValueOrDefault(HashOfException, Handler);
-
         return ExceptionDict.GetValueOrDefault(HashOfException, Handler);
     }
 }
