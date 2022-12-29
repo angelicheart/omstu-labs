@@ -12,8 +12,12 @@ public class FindHandlerWithTreeStrategy : IStrategy
 
         var ExceptionHandlerTree = IoC.Resolve<IReadOnlyDictionary<Int32, IReadOnlyDictionary<Int32, IStrategy>>>("Game.Exception.GetTree");
 
-        var SubTree = IoC.Resolve<IReadOnlyDictionary<Int32, IStrategy>>("Game.Exception.GetSubTree");
+        var ExceptionDict = IoC.Resolve<IReadOnlyDictionary<Int32, IStrategy>>("Game.Exception.GetSubTree");
 
-        return ExceptionHandlerTree[HashOfCommand].TryGetValue(HashOfException, out var value) ? value : SubTree.TryGetValue(HashOfException, out var val) ? val : null;
+        ExceptionHandlerTree.TryGetValue(HashOfCommand, out ExceptionDict);
+
+        IStrategy Handler = IoC.Resolve<IStrategy>("Game.Exception.GetEmptyStrategy"); 
+
+        return ExceptionDict.TryGetValue(HashOfException, out Handler);
     }
 }
