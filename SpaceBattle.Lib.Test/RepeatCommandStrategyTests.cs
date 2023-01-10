@@ -29,10 +29,27 @@ public class RepeatCommandStrategyTests
     [Fact]
     public void RepeatCommandStrategyPositive()
     {
+        // Arrange
         var TestObj = new Mock<IUObject>();
         var Operation = "Operation.Name";
+
+        // Act
+        // Assert
+        var Command = new RepeatCommandStrategy();
+        Command.Execute(Operation, TestObj.Object);
+    }
+
+    [Fact]  
+    public void MacroCommandNullTest() 
+    {
+        // Arrange
+        var TestObj = new Mock<IUObject>();
         var Command = new RepeatCommandStrategy();
 
-        Command.Execute(Operation, TestObj.Object);
+        Command.Execute(null, TestObj.Object);
+
+        // Act
+        // Assert
+        Assert.ThrowsAny<Exception>(() => Command.Execute());
     }
 }
