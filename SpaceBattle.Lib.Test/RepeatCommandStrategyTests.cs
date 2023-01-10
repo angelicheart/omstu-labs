@@ -40,7 +40,7 @@ public class RepeatCommandStrategyTests
     }
 
     [Fact]  
-    public void MacroCommandNullTest() 
+    public void RepeatCommandStrategyNullTest() 
     {
         // Arrange
         var TestObj = new Mock<IUObject>();
@@ -51,5 +51,53 @@ public class RepeatCommandStrategyTests
         // Act
         // Assert
         Assert.ThrowsAny<Exception>(() => Command.Execute());
+    }
+
+    [Fact]  
+    public void InjectCommandNullTest() 
+    {
+        // Arrange
+        var TestObj = new Mock<IUObject>();
+        var Command = new InjectCommand(null);
+
+        // Act
+        // Assert
+        Assert.ThrowsAny<Exception>(() => Command.Execute());
+    }
+
+    [Fact]  
+    public void RepeatCommandNullTest() 
+    {
+        // Arrange
+        var TestObj = new Mock<IUObject>();
+        var Command = new RepeatCommand(null);
+
+        // Act
+        // Assert
+        Assert.ThrowsAny<Exception>(() => Command.Execute());
+    }
+
+    [Fact]  
+    public void RepeatCommandPositiveTest() 
+    {
+        // Arrange
+        var TestCommand = new Mock<ICommand>();
+        var Command = new RepeatCommand(TestCommand.Object);
+
+        // Act
+        // Assert
+        Command.Execute();
+    }
+
+    [Fact]  
+    public void InjectCommandPositiveTest() 
+    {
+        // Arrange
+        var TestCommand = new Mock<ICommand>();
+        var Command = new InjectCommand(TestCommand.Object);
+
+        // Act
+        // Assert
+        Command.Execute();
     }
 }
