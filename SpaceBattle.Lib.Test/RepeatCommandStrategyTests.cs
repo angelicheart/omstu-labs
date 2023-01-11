@@ -21,10 +21,14 @@ public class RepeatCommandStrategyTests
         var RepeatStrategy = new Mock<IStrategy>();
         RepeatStrategy.Setup(s => s.Execute(It.IsAny<object[]>())).Returns(RepeatCommand);
 
+        var QueueCommand = new Mock<ICommand>();
+        var QueueStrategy = new Mock<IStrategy>();
+        QueueStrategy.Setup(s => s.Execute(It.IsAny<object[]>())).Returns(QueueCommand.Object);
+
         IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Commands.MacroCommand", (object[] args) => CommandStrategy.Object.Execute(args)).Execute();
         IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Commands.InjectCommand", (object[] args) => InjectStrategy.Object.Execute(args)).Execute();
         IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Commands.RepeatCommand", (object[] args) => RepeatStrategy.Object.Execute(args)).Execute();
-        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Queue.Push", (object[] args) => InjectStrategy.Object.Execute(args)).Execute();
+        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Queue.Push", (object[] args) => QueueStrategy.Object.Execute(args)).Execute();
     }
 
     [Fact]
@@ -54,7 +58,20 @@ public class RepeatCommandStrategyTests
         Assert.ThrowsAny<Exception>(() => Command.Execute());
     }
 
+
     [Fact]  
+    public void InjectCommandPositiveTest() 
+    {
+        // Arrange
+        var TestCommand = new Mock<ICommand>();
+        var Command = new InjectCommand(TestCommand.Object);
+
+        // Act
+        // Assert
+        Command.Execute();
+    }
+
+    [Fact]
     public void InjectCommandNullTest() 
     {
         // Arrange
@@ -82,15 +99,15 @@ public class RepeatCommandStrategyTests
     public void InjectMethodPositiveTest() 
     {
         // Arrange
-        string operation = "Operation.Name";
-        var TestObj = new Mock<IUObject>();
-        var TestCommand = IoC.Resolve<ICommand>("Game.Commands.MacroCommand", operation, TestObj.Object);
-        var Command = new InjectCommand(TestCommand);
+        var Command = new Mock<ICommand>();
+        Command.Setup(c => c.Execute());
+        var InjectCmd = new InjectCommand(Command.Object);
         
 
         // Act
         // Assert
-        Command.Inject(TestCommand);
+        InjectCmd.Inject(Command.Object);
+        InjectCmd.Execute();
     }
 
     [Fact]  
@@ -99,18 +116,6 @@ public class RepeatCommandStrategyTests
         // Arrange
         var TestCommand = new Mock<ICommand>();
         var Command = new RepeatCommand(TestCommand.Object);
-
-        // Act
-        // Assert
-        Command.Execute();
-    }
-
-    [Fact]  
-    public void InjectCommandPositiveTest() 
-    {
-        // Arrange
-        var TestCommand = new Mock<ICommand>();
-        var Command = new InjectCommand(TestCommand.Object);
 
         // Act
         // Assert
