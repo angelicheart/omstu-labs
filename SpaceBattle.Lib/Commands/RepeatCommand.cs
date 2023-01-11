@@ -10,5 +10,6 @@ public class RepeatCommand : ICommand
     public void Execute()
     {
         Command.Execute();
+        IoC.Resolve<ICommand>("Game.Queue.Push", Command).Execute();
     }
 }

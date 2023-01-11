@@ -24,6 +24,7 @@ public class RepeatCommandStrategyTests
         IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Commands.MacroCommand", (object[] args) => CommandStrategy.Object.Execute(args)).Execute();
         IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Commands.InjectCommand", (object[] args) => InjectStrategy.Object.Execute(args)).Execute();
         IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Commands.RepeatCommand", (object[] args) => RepeatStrategy.Object.Execute(args)).Execute();
+        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Queue.Push", (object[] args) => InjectStrategy.Object.Execute(args)).Execute();
     }
 
     [Fact]
@@ -75,6 +76,21 @@ public class RepeatCommandStrategyTests
         // Act
         // Assert
         Assert.ThrowsAny<Exception>(() => Command.Execute());
+    }
+
+    [Fact]  
+    public void InjectMethodPositiveTest() 
+    {
+        // Arrange
+        string operation = "Operation.Name";
+        var TestObj = new Mock<IUObject>();
+        var TestCommand = IoC.Resolve<ICommand>("Game.Commands.MacroCommand", operation, TestObj.Object);
+        var Command = new InjectCommand(TestCommand);
+        
+
+        // Act
+        // Assert
+        Command.Inject(TestCommand);
     }
 
     [Fact]  

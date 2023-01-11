@@ -1,12 +1,18 @@
 namespace SpaceBattle.Lib;
 
-public class InjectCommand : ICommand
+public class InjectCommand : ICommand, IInjectable
 {
-    private readonly ICommand Command;
+    private ICommand Command;
     public InjectCommand(ICommand command) 
     {
         this.Command = command;
     }
+
+    public void Inject(ICommand obj)
+    {
+        Command = obj;
+    }
+
     public void Execute()
     {
         Command.Execute();
