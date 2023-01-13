@@ -9,7 +9,7 @@ public class RepeatCommandStrategy : IStrategy
 
         var mcd = IoC.Resolve<ICommand>("Game.Commands.MacroCommand", operation, obj);
         var repeat = IoC.Resolve<ICommand>("Game.Commands.RepeatCommand", mcd);
-        var inject = IoC.Resolve<ICommand>("Game.Commands.RepeatCommand", repeat);
+        var inject = IoC.Resolve<ICommand>("Game.Commands.InjectCommand", repeat);
 
         return inject;
     }
