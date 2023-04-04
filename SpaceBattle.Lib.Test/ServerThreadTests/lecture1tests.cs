@@ -1,8 +1,4 @@
-using System;
-using System.Threading;
-using Moq;
-
-namespace Server;
+namespace SpaceBattle.Lib.Test;
 
 public class UnitTests
 {
