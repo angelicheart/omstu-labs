@@ -4,4 +4,6 @@ global using Moq;
 global using Hwdtech;
 global using Hwdtech.Ioc;
 
-using SpaceBattle.Lib;
+global using System.Collections.Concurrent;
+
+global using SpaceBattle.Lib;

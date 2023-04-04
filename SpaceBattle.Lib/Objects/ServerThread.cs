@@ -3,9 +3,9 @@ namespace SpaceBattle.Lib;
 public class ServerThread
 {
     public IReciever reciever;
-    Thread thread;
+    public Thread thread;
     private bool stop = false;
-    private Action strategy; // содержит action который будет выполняться на каждой итерации в потоке
+    private Action strategy;
     public ServerThread(IReciever reciever)
     {
         strategy = () => {
@@ -14,13 +14,13 @@ public class ServerThread
 
         this.reciever = reciever;
 
-        thread = new Thread {
-            () => {
-                while(!stop) {
-                    strategy();
-                }
+        thread = new Thread(() =>
+        {
+            while (!stop && !reciever.isEmpty())
+            {
+                strategy();
             }
-        };
+        });
     }
 
     internal void HandleCommand() 
@@ -38,7 +38,7 @@ public class ServerThread
         stop = true;
     }
 
-    void Execute()
+    public void Execute()
     {
         thread.Start();
     }
