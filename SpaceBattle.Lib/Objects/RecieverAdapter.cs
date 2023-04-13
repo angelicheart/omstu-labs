@@ -1,6 +1,6 @@
 namespace SpaceBattle.Lib;
 
-class RecieverAdapter : IReciever
+public class RecieverAdapter : IReciever
 {
     BlockingCollection<ICommand> queue;
 

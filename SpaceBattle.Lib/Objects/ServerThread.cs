@@ -2,21 +2,25 @@ namespace SpaceBattle.Lib;
 
 public class ServerThread
 {
-    public IReciever reciever;
+    public RecieverAdapter reciever;
+
     public Thread thread;
+
     private bool stop = false;
+
     private Action strategy;
-    public ServerThread(IReciever reciever)
+
+    public ServerThread(RecieverAdapter reciever)
     {
         strategy = () => {
-                HandleCommand();
+            HandleCommand();
         };
 
         this.reciever = reciever;
 
         thread = new Thread(() =>
         {
-            while (!stop && !reciever.isEmpty())
+            while (!stop ^ !reciever.isEmpty())
             {
                 strategy();
             }
