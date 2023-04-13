@@ -1,13 +1,13 @@
 namespace SpaceBattle.Lib;
 
-// class SenderAdapter : ISender
-// {
-//     ICommand cmd; 
+public class SenderAdapter : ISender
+{
+    BlockingCollection<ICommand> queue;
 
-//     public SenderAdapter(ICommand cmd) => this.cmd = cmd;
+    public SenderAdapter(BlockingCollection<ICommand> queue) => this.queue = queue;
 
-//     public ICommand Send()
-//     {
-//         queue.Send();
-//     }
-// }
+    public void Send(ICommand command)
+    {
+        queue.Add(command);
+    }
+}

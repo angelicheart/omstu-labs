@@ -5,3 +5,9 @@ public class EmptyCommand : ICommand {
 
     }
 }
+
+public class ExceptionCommand : ICommand {
+    public void Execute () {
+        throw new Exception("123");
+    }
+}

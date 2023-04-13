@@ -20,7 +20,7 @@ public class ServerThread
 
         thread = new Thread(() =>
         {
-            while (!stop ^ !reciever.isEmpty())
+            while (!stop)
             {
                 strategy();
             }

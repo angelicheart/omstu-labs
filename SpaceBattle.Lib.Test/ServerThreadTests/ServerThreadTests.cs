@@ -1,47 +1,44 @@
 namespace SpaceBattle.Lib.Test;
 
-public class UnitTests12
+public class ServerThreadTests
 {
-    [Fact]
-    public void ServerThread_test()
+    public ServerThreadTests()
     {
-        var queue1 = new BlockingCollection<ICommand>();
-        var reciever = new RecieverAdapter(queue1);
+        new InitScopeBasedIoCImplementationCommand().Execute();
 
-        var sender = new Mock<ISender>();
+        IoC.Resolve<Hwdtech.ICommand>("Scopes.Current.Set", IoC.Resolve<object>("Scopes.New", IoC.Resolve<object>("Scopes.Root"))).Execute();
 
-        sender.Setup(s => s.Send(It.IsAny<ICommand>())).Callback<ICommand>((command) => queue1.Add(command));
+        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Threads.Domain", (object[] args) => new ThreadsDomainStrategy()).Execute();
+    }
 
-        sender.Object.Send(new ActionCommand(
-            (arg) => {
-                new EmptyCommand();
-            } 
-        ));
+    [Fact]
+    public void ServerThread_1()
+    {
+        var queue = new BlockingCollection<ICommand>();
 
-        sender.Object.Send(new ActionCommand(
-            (arg) => {
-                new EmptyCommand();
-            } 
-        ));
+        var reciever = new RecieverAdapter(queue);
 
-        sender.Object.Send(new ActionCommand(
-            (arg) => {
-                throw new Exception();
-            } 
-        ));
+        var sender = new SenderAdapter(queue);
 
-        Assert.Equal(3, queue1.Count);
-        Assert.False(reciever.isEmpty());
+        var ObjThatMove = new Mock<IMovable>();
+
+        ObjThatMove.SetupGet(m => m.position).Returns(new Vector(12, 5)).Verifiable();
+        ObjThatMove.SetupGet(m => m.velocity).Returns(new Vector(-7, 3)).Verifiable();
+
+        var MoveCommand = new MoveCommand(ObjThatMove.Object);
+
+        sender.Send(MoveCommand);
 
         ServerThread st = new ServerThread(reciever);
 
         st.Execute();
 
-        Assert.Equal(0, queue1.Count);
-        Assert.True(reciever.isEmpty());
+        Thread.Sleep(1);
+
+        ObjThatMove.VerifySet(m => m.position = new Vector(5, 8));
     }
 
-        [Fact]
+    [Fact]
     public void ServerThread_test1()
     {
         var queue1 = new BlockingCollection<ICommand>(100);
@@ -55,13 +52,7 @@ public class UnitTests12
 
         sender.Object.Send(new ActionCommand(
             (arg) => {
-                throw new System.Exception();
-            } 
-        ));
-
-        sender.Object.Send(new ActionCommand(
-            (arg) => {
-                throw new System.Exception();
+                new ExceptionCommand();
             } 
         ));
 
@@ -76,17 +67,13 @@ public class UnitTests12
 
         sender2.Object.Send(new ActionCommand(
             (arg) => {
-                throw new System.Exception();
-            } 
-        ));
-
-        sender2.Object.Send(new ActionCommand(
-            (arg) => {
-                throw new System.Exception();
+                new ExceptionCommand();
             } 
         ));
 
         st.Execute();
         st2.Execute();
+
+        Thread.Sleep(1);
     }
 }
