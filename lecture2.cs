@@ -227,3 +227,15 @@ class InterpretCommand : InterperCommand
 IoC.Resolve<ICommand>("IoC.register", "GameItems.Get", (args) =>
 
 );
+
+
+soft stop
+
+while !stop {
+    if !queue.isEmpty() {
+        strategy();
+    }
+    else
+    Action.exectue,
+    thread stop
+}

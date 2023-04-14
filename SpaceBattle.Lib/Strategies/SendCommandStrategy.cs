@@ -1,0 +1,1 @@
+// SendCOmmandStrategy returns SendCommand(ISender, ICommand)
