@@ -11,10 +11,10 @@ public class ServerThreadTests
         var tds = new ThreadsDomainStrategy();
         IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Threads.Domain", (object[] args) => tds.Execute(args)).Execute();
 
-        var rds = new ThreadsDomainStrategy();
+        var rds = new RecieversDomainStrategy();
         IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Recievers.Domain", (object[] args) => rds.Execute(args)).Execute();
 
-        var sds = new ThreadsDomainStrategy();
+        var sds = new SendersDomainStrategy();
         IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Senders.Domain", (object[] args) => sds.Execute(args)).Execute();
 
         IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Threads.Domain.Get", (object[] args) => new ServerThreadDomainGetStrategy().Execute(args)).Execute();
@@ -23,7 +23,6 @@ public class ServerThreadTests
     [Fact]
     public void ServerThread_1()
     {
-
         ManualResetEvent mre = new ManualResetEvent(false);
 
         var queue = new BlockingCollection<ICommand>();
@@ -43,16 +42,11 @@ public class ServerThreadTests
 
         ServerThread st = new ServerThread(reciever);
 
-        ConcurrentDictionary<string, ServerThread> ServerThreadDomain = IoC.Resolve<ConcurrentDictionary<string, ServerThread>>("Game.Threads.Domain");
+        IoC.Resolve<ConcurrentDictionary<string, ServerThread>>("Game.Threads.Domain")["1"] = st;
+        IoC.Resolve<ConcurrentDictionary<string, IReciever>>("Game.Recievers.Domain")["1"] = reciever;
+        IoC.Resolve<ConcurrentDictionary<string, ISender>>("Game.Senders.Domain")["1"] = sender;
 
-        ServerThreadDomain["1"] = st;
-
-        ConcurrentDictionary<string, ServerThread> ServerThreadDomain2 = IoC.Resolve<ConcurrentDictionary<string, ServerThread>>("Game.Threads.Domain");
- 
-
-        ServerThread test = IoC.Resolve<ServerThread>("Game.Threads.Domain.Get", "1");
-
-        test.Execute();
+        IoC.Resolve<ServerThread>("Game.Threads.Domain.Get", "1").Execute();
 
         mre.Set();
 
