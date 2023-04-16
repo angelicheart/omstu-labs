@@ -40,7 +40,7 @@ public class ServerThreadTests
         ConcurrentDictionary<string, ServerThread> ServerThreadDomain2 = IoC.Resolve<ConcurrentDictionary<string, ServerThread>>("Game.Threads.Domain");
  
 
-        ServerThread test = IoC.Resolve<ServerThread>("Game.Threads.Domain.Get", "2");
+        ServerThread test = IoC.Resolve<ServerThread>("Game.Threads.Domain.Get", "1");
 
         test.Execute();
 
