@@ -23,6 +23,9 @@ public class ServerThreadTests
     [Fact]
     public void ServerThread_1()
     {
+
+        ManualResetEvent mre = new ManualResetEvent(false);
+
         var queue = new BlockingCollection<ICommand>();
 
         var reciever = new RecieverAdapter(queue);
@@ -51,7 +54,7 @@ public class ServerThreadTests
 
         test.Execute();
 
-        Thread.Sleep(1);
+        mre.Set();
 
         ObjThatMove.VerifySet(m => m.position = new Vector(5, 8));
     }
