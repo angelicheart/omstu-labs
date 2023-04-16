@@ -7,10 +7,17 @@ public class ServerThreadTests
         new InitScopeBasedIoCImplementationCommand().Execute();
 
         IoC.Resolve<Hwdtech.ICommand>("Scopes.Current.Set", IoC.Resolve<object>("Scopes.New", IoC.Resolve<object>("Scopes.Root"))).Execute();
+
         var tds = new ThreadsDomainStrategy();
         IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Threads.Domain", (object[] args) => tds.Execute(args)).Execute();
-        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Threads.Domain.Get", (object[] args) => new ServerThreadDomainGetStrategy().Execute(args)).Execute();
 
+        var rds = new ThreadsDomainStrategy();
+        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Recievers.Domain", (object[] args) => rds.Execute(args)).Execute();
+
+        var sds = new ThreadsDomainStrategy();
+        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Senders.Domain", (object[] args) => sds.Execute(args)).Execute();
+
+        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Threads.Domain.Get", (object[] args) => new ServerThreadDomainGetStrategy().Execute(args)).Execute();
     }
 
     [Fact]
