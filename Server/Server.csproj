@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+<<<<<<< HEAD
     <PackageReference Include="Hwdtech.Core" Version="1.0.0" />
     <PackageReference Include="Hwdtech.IoC" Version="1.0.0" />
     <PackageReference Include="Hwdtech.Ioc.ScopeBasedIoCImplementation" Version="1.0.0" />
@@ -17,5 +18,8 @@
   <ItemGroup>
     <ProjectReference Include="..\SpaceBattle.Lib\SpaceBattle.Lib.csproj"/>
     <ProjectReference Include="..\SpaceBattle.Lib.Test\SpaceBattle.Lib.Test.csproj"/>
+=======
+    <ProjectReference Include="..\SpaceBattle.Lib\SpaceBattle.Lib.csproj"/>
+>>>>>>> 31906a350b3cb233f0eb20d4dbf03071a3479222
   </ItemGroup>
 </Project>

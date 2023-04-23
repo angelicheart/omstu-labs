@@ -11,6 +11,9 @@ public class StartServerСommand : ICommand
 
     public void Execute()
     {
-        // создание потоков
+        //for (int id = 0; id < n_threads; id++)
+        //{
+            // IoC.Resolve<ICommand>("Create And Start Thread", id).Execute();
+        //}
     }
 }
