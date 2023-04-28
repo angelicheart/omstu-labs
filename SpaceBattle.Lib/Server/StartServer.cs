@@ -11,9 +11,9 @@ public class StartServer
 
     public void Execute()
     {
-        IoC.Resolve<ICommand>("StartServerCommand", n_threads).Execute();
+        IoC.Resolve<ICommand>("StartServerCommand", n_threads);
         Console.WriteLine("Ожидание нажатия клавиши");
-        Console.ReadKey();
+        Console.Read();
         // IoC.Resolve<ICommand>("StopServerCommand", n_threads).Execute();
     }
 }
