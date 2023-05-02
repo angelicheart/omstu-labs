@@ -269,3 +269,5 @@ string PropertyAdapter(string type, string name, bool getProperty, bool setPrope
 Func<object, IMovable> str = (obj) {
     return new MovableAdapter(obj);
 }
+
+

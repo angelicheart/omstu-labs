@@ -37,7 +37,7 @@ public class ServerThread
             this.strategy = strategy;
     }
 
-    internal void Stop()
+    public void Stop()
     {
         stop = true;
     }

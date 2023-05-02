@@ -1,4 +1,5 @@
 namespace SpaceBattle.Lib.Test;
+using System.Threading;
 
 public class ServerThreadTests
 {
@@ -17,13 +18,23 @@ public class ServerThreadTests
         var sds = new SendersDomainStrategy();
         IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Senders.Domain", (object[] args) => sds.Execute(args)).Execute();
 
-        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Threads.Domain.Get", (object[] args) => new ServerThreadDomainGetStrategy().Execute(args)).Execute();
+        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Threads.Domain.Set", (object[] args) => new ThreadsDomainSetStrategy().Execute(args)).Execute();
+        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Threads.Domain.Get", (object[] args) => new ThreadsDomainGetStrategy().Execute(args)).Execute();
+
+        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Recievers.Domain.Set", (object[] args) => new RecieversDomainSetStrategy().Execute(args)).Execute();
+        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Recievers.Domain.Get", (object[] args) => new RecieversDomainGetStrategy().Execute(args)).Execute();
+
+        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Senders.Domain.Set", (object[] args) => new SendersDomainSetStrategy().Execute(args)).Execute();
+        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Senders.Domain.Get", (object[] args) => new SendersDomainGetStrategy().Execute(args)).Execute();
+
+        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Senders.Send", (object[] args) => new SendCommandStrategy().Execute(args)).Execute();
+
     }
 
     [Fact]
     public void ServerThread_1()
     {
-        ManualResetEvent mre = new ManualResetEvent(false);
+        AutoResetEvent are = new AutoResetEvent(false);
 
         var queue = new BlockingCollection<ICommand>();
 
@@ -38,17 +49,17 @@ public class ServerThreadTests
 
         var MoveCommand = new MoveCommand(ObjThatMove.Object);
 
-        sender.Send(MoveCommand);
+        var st = new ServerThread(reciever);
 
-        ServerThread st = new ServerThread(reciever);
+        sender.Send(new MoveCommand(ObjThatMove.Object));
 
-        IoC.Resolve<ConcurrentDictionary<string, ServerThread>>("Game.Threads.Domain")["1"] = st;
-        IoC.Resolve<ConcurrentDictionary<string, IReciever>>("Game.Recievers.Domain")["1"] = reciever;
-        IoC.Resolve<ConcurrentDictionary<string, ISender>>("Game.Senders.Domain")["1"] = sender;
+        IoC.Resolve<ICommand>("Game.Threads.Domain.Set", "1", st).Execute();
+        IoC.Resolve<ICommand>("Game.Recievers.Domain.Set", "1", reciever).Execute();
+        IoC.Resolve<ICommand>("Game.Senders.Domain.Set", "1", sender).Execute();
 
         IoC.Resolve<ServerThread>("Game.Threads.Domain.Get", "1").Execute();
 
-        mre.Set();
+        Thread.Sleep(3000);
 
         ObjThatMove.VerifySet(m => m.position = new Vector(5, 8));
     }

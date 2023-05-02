@@ -34,8 +34,8 @@ class MyThread
     internal void UpdateBehaviour(Action newBehaviour)
     {
         strategy = newBehaviour;
-
     }
+
     public void Execute()
     {
         thread.Start();
