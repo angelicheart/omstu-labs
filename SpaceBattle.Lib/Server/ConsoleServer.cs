@@ -12,8 +12,8 @@ public class ConsoleServer
     public void Execute()
     {
         IoC.Resolve<ICommand>("StartServerCommand", n_threads).Execute();
-        Console.WriteLine("Ожидание нажатия клавиши");
-        Console.Read();
+        Console.WriteLine("Waiting for a press key . . .");
+        //Console.Read();
         IoC.Resolve<ICommand>("StopServerCommand", n_threads).Execute();
     }
 }
