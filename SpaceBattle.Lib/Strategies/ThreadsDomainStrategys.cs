@@ -18,8 +18,7 @@ public class ThreadsDomainGetStrategy : IStrategy
     {
         string id = (string) args[0];
 
-        var dict = IoC.Resolve<ConcurrentDictionary<string, ServerThread>>("Game.Threads.Domain");
-        return dict[id];
+        return IoC.Resolve<ConcurrentDictionary<string, ServerThread>>("Game.Threads.Domain")[id];
     }
 }
 
@@ -30,7 +29,6 @@ public class ThreadsDomainSetStrategy : IStrategy
         string id = (string) args[0];
         ServerThread thread = (ServerThread) args[1];
 
-        var SetCommand = new ThreadsDomainSetCommand(id, thread);
-        return SetCommand;
+        return new ThreadsDomainSetCommand(id, thread);
     }
 }

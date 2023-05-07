@@ -2,7 +2,7 @@ namespace SpaceBattle.Lib;
 
 public class RecieverAdapter : IReciever
 {
-    BlockingCollection<ICommand> queue;
+    public BlockingCollection<ICommand> queue;
 
     public RecieverAdapter(BlockingCollection<ICommand> queue) => this.queue = queue;
 

@@ -2,31 +2,50 @@ namespace SpaceBattle.Lib;
 
 public class ServerThread
 {
-    public RecieverAdapter reciever;
+    internal ManualResetEvent pauseEvent = new ManualResetEvent(false);
 
-    public Thread thread;
+    public void Pause()
+    {
+        pauseEvent.Reset();
+        stop = false;
+    }
 
-    private bool stop = false;
+    public void Resume()
+    {
+        pauseEvent.Set();
+        stop = true;
+    }
 
-    private Action strategy;
+    internal IReciever reciever;
 
-    public ServerThread(RecieverAdapter reciever)
+    internal Thread thread;
+
+    internal bool stop = false;
+
+    internal Action strategy;
+
+    internal ServerThread(IReciever reciever)
     {
         strategy = () => {
-            HandleCommand();
+            // try {
+                HandleCommand();
+            // }
+
+            // catch (Exception e) {
+            //     IoC.Resolve<IStrategy>("Game.Exceptions.FindExcHandlerForCommands", reciever.Recieve(), e);
+            // }   
         };
 
         this.reciever = reciever;
 
-        thread = new Thread(() =>
-        {
-            while (!stop)
-            {
+        thread = new Thread(() => {
+             do {
+                pauseEvent.WaitOne(Timeout.Infinite);
                 strategy();
-            }
+            } while (!stop);
         });
     }
-
+    
     internal void HandleCommand() 
     {
         var cmd = reciever.Recieve();
@@ -34,16 +53,17 @@ public class ServerThread
     }
 
     internal void UpdateBehaviour(Action strategy) {
-            this.strategy = strategy;
+        this.strategy = strategy;
     }
 
-    public void Stop()
+    internal void Stop()
     {
         stop = true;
     }
 
-    public void Execute()
+    internal void Start()
     {
+        pauseEvent.Set();
         thread.Start();
     }
 }

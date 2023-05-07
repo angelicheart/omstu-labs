@@ -9,9 +9,15 @@ public class ActionCommand : ICommand {
         this.action = action;
         this.args = args;
     }
-    
+
     public void Execute()
     {
+        // try {
+            action(args);
+        // }
 
+        // catch (Exception e) {
+        //     IoC.Resolve<IStrategy>("Game.Exceptions.FindExcHandlerForActions", action, args, e);
+        // }   
     }
 }

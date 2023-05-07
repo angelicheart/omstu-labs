@@ -7,7 +7,6 @@ public class SendCommandStrategy : IStrategy
         string id = (string)args[0];
         ICommand command = (ICommand)args[1];
 
-        var SendCommand = new SendCommand(id, command);
-        return SendCommand;
+        return new SendCommand(id, command);
     }
 }
