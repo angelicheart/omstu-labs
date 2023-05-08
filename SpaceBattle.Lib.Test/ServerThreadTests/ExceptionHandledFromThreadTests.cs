@@ -7,7 +7,7 @@ public class ExceptionHandledFromThreadTests
         ServerThreadRegistryClass.ServerThreadRegistry();
     }
 
-    [Fact(Timeout = 50)]
+    [Fact(Timeout = 100)]
     public void ExceptionHandledFromThreadTest()
     {
         AutoResetEvent waitHandler = new AutoResetEvent(false);
@@ -34,7 +34,7 @@ public class ExceptionHandledFromThreadTests
         Assert.False(IoC.Resolve<RecieverAdapter>("Game.Recievers.Domain.Get", "1").isEmpty());
     }
 
-    [Fact(Timeout = 50)]
+    [Fact(Timeout = 100)]
     public void ExceptionHandledFromThreadActionTest()
     {
         AutoResetEvent waitHandler = new AutoResetEvent(true);

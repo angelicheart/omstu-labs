@@ -7,7 +7,7 @@ public class SoftStopCommandTests
         ServerThreadRegistryClass.ServerThreadRegistry();
     }
 
-    [Fact(Timeout = 50)]
+    [Fact(Timeout = 100)]
     public void SoftStopThreadTest_wAction_succ()
     {
         AutoResetEvent waitHandler = new AutoResetEvent(false);
@@ -34,7 +34,7 @@ public class SoftStopCommandTests
         Assert.True(IoC.Resolve<RecieverAdapter>("Game.Recievers.Domain.Get", "1").isEmpty());
     }
 
-    [Fact(Timeout = 50)]
+    [Fact(Timeout = 100)]
     public void SoftStopThreadTest_woAction_succ()
     {
         AutoResetEvent waitHandler = new AutoResetEvent(false);

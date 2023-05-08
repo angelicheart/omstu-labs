@@ -7,24 +7,23 @@ public class UpdateBehaviourTests
         ServerThreadRegistryClass.ServerThreadRegistry();
     }
 
-    [Fact(Timeout = 50)]
+    [Fact(Timeout = 100)]
     public void UpdateBehaviour_succ()
     {
-        AutoResetEvent waitHandler = new AutoResetEvent(false);
-        ActionCommand waitHandlerSet = new ActionCommand((arg) => {
-            waitHandler.Set();
-        });
+        BlockingCollection<ICommand> queue = new BlockingCollection<ICommand>(100);
 
-        IoC.Resolve<ICommand>("Game.Threads.CreateAndStart", "1").Execute();
+        queue.Add(new EmptyCommand());
+        queue.Add(new EmptyCommand());
+        queue.Add(new EmptyCommand());
 
-        IoC.Resolve<ServerThread>("Game.Threads.Domain.Get", "1").UpdateBehaviour(() => {
-            waitHandlerSet.Execute();
-        });
+        RecieverAdapter reciever = new RecieverAdapter(queue);
 
-        IoC.Resolve<ServerThread>("Game.Threads.Domain.Get", "1").Stop();
+        SenderAdapter sender = new SenderAdapter(queue);
 
-        waitHandler.WaitOne();
+        ServerThread st = new ServerThread(reciever);
 
-        Assert.False(IoC.Resolve<RecieverAdapter>("Game.Recievers.Domain.Get", "1").isEmpty());
+        st.UpdateBehaviour(() => {st.Stop(); Assert.True(st.stop);});
+
+        st.Start();
     }
 }

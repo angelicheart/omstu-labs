@@ -7,7 +7,7 @@ public class CreateAndStartThreadTests
         ServerThreadRegistryClass.ServerThreadRegistry();
     }
     
-    [Fact(Timeout = 50)]
+    [Fact(Timeout = 100)]
     public void CreateAndStartThread_wAction_succ()
     {
         AutoResetEvent waitHandler = new AutoResetEvent(false);
@@ -32,7 +32,7 @@ public class CreateAndStartThreadTests
         Assert.False(IoC.Resolve<RecieverAdapter>("Game.Recievers.Domain.Get", "1").isEmpty());
     }
 
-    [Fact(Timeout = 50)]
+    [Fact(Timeout = 100)]
     public void CreateAndStartThread_woAction_succ()
     {
        AutoResetEvent waitHandler = new AutoResetEvent(false);

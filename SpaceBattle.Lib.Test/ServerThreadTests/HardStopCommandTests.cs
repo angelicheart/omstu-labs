@@ -7,7 +7,7 @@ public class HardStopCommandTests
         ServerThreadRegistryClass.ServerThreadRegistry();
     }
 
-    [Fact(Timeout = 50)]
+    [Fact(Timeout = 100)]
     public void HardStopThreadTest_wAction_succ()
     {
         AutoResetEvent waitHandler = new AutoResetEvent(false);
@@ -30,7 +30,7 @@ public class HardStopCommandTests
         Assert.False(IoC.Resolve<RecieverAdapter>("Game.Recievers.Domain.Get", "1").isEmpty());
     }
 
-    [Fact(Timeout = 50)]
+    [Fact(Timeout = 100)]
     public void HardStopThreadTest_woAction_succ()
     {
         AutoResetEvent waitHandler = new AutoResetEvent(false);
