@@ -14,22 +14,22 @@ public class SoftStopThreadCommand : ICommand
     public void Execute()
     {
         ServerThread st = IoC.Resolve<ServerThread>("Game.Threads.Domain.Get", id);
+        RecieverAdapter reciever = IoC.Resolve<RecieverAdapter>("Game.Recievers.Domain.Get", id); 
 
-        while (!st.stop)
-        {
-            if (!IoC.Resolve<RecieverAdapter>("Game.Recievers.Domain.Get", id).isEmpty()) {
-                st.strategy();
-            }
-            else 
-            { 
-            IoC.Resolve<ICommand>("Game.Senders.Send", id, new ActionCommand((arg) => {
-                new StopThreadCommand(st).Execute();
-                action_after_stop.Execute();
-            })).Execute();
+        Action SoftStop = () => {
+            while (!st.stop)
+                if (!reciever.isEmpty()) {
+                    st.strategy();
+                }
+                else 
+                { 
+                    st.Stop();
+                    action_after_stop.Execute();
+                }
+            };
 
-                // IoC.Resolve<ICommand>("Game.Senders.Send", id, new StopThreadCommand(IoC.Resolve<ServerThread>("Game.Threads.Domain.Get", id))).Execute();
-                // action_after_stop.Execute();
-            }
-        }
+        IoC.Resolve<ICommand>("Game.Senders.Send", id, new ActionCommand((arg) => {
+            SoftStop();
+        })).Execute();
     }
 }

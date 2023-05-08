@@ -2,68 +2,69 @@ namespace SpaceBattle.Lib;
 
 public class ServerThread
 {
-    internal ManualResetEvent pauseEvent = new ManualResetEvent(false);
+    public ManualResetEvent _manualResetEvent = new ManualResetEvent(false);
 
     public void Pause()
     {
-        pauseEvent.Reset();
-        stop = false;
+        _manualResetEvent.Reset();
     }
 
     public void Resume()
     {
-        pauseEvent.Set();
-        stop = true;
+        _manualResetEvent.Set();
     }
 
-    internal IReciever reciever;
+    public IReciever reciever;
 
-    internal Thread thread;
+    public Thread thread;
 
-    internal bool stop = false;
+    public bool stop = false;
 
-    internal Action strategy;
+    public Action strategy;
 
-    internal ServerThread(IReciever reciever)
+    public IStrategy exchandler = IoC.Resolve<IStrategy>("Game.Exception.FindExceptionHandlerForCmd");
+
+    public ServerThread(IReciever reciever)
     {
         strategy = () => {
-            // try {
-                HandleCommand();
-            // }
 
-            // catch (Exception e) {
-            //     IoC.Resolve<IStrategy>("Game.Exceptions.FindExcHandlerForCommands", reciever.Recieve(), e);
-            // }   
+            var cmd = reciever.Recieve();
+
+            try {
+                cmd.Execute();
+            }
+
+            catch (Exception e) {
+                
+                exchandler.Execute(new object[] {cmd, e});
+            }   
         };
 
         this.reciever = reciever;
 
         thread = new Thread(() => {
-             do {
-                pauseEvent.WaitOne(Timeout.Infinite);
+             do  {
+                _manualResetEvent.WaitOne(Timeout.Infinite);
+                
                 strategy();
             } while (!stop);
         });
     }
-    
-    internal void HandleCommand() 
-    {
-        var cmd = reciever.Recieve();
-        cmd.Execute();
-    }
 
-    internal void UpdateBehaviour(Action strategy) {
+    public void UpdateBehaviour(Action strategy) {
         this.strategy = strategy;
     }
 
-    internal void Stop()
+    public void Stop()
     {
+        _manualResetEvent.Reset();
+
         stop = true;
     }
 
-    internal void Start()
+    public void Start()
     {
-        pauseEvent.Set();
         thread.Start();
+        _manualResetEvent.Set();
     }
 }

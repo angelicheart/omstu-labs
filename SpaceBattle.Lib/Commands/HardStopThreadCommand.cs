@@ -13,13 +13,11 @@ public class HardStopThreadCommand : ICommand
 
     public void Execute()
     {
-        ServerThread st = IoC.Resolve<ServerThread>("Game.Threads.Domain.Get", id); 
+        ServerThread st = IoC.Resolve<ServerThread>("Game.Threads.Domain.Get", id);
+
         IoC.Resolve<ICommand>("Game.Senders.Send", id, new ActionCommand((arg) => {
-            new StopThreadCommand(st).Execute();
+            st.Stop();
             action_after_stop.Execute();
         })).Execute();
-        
-        // IoC.Resolve<ICommand>("Game.Senders.Send", id, new StopThreadCommand(IoC.Resolve<ServerThread>("Game.Threads.Domain.Get", id))).Execute();
-        // action_after_stop.Execute();
     }
 }

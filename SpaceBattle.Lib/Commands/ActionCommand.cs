@@ -12,12 +12,6 @@ public class ActionCommand : ICommand {
 
     public void Execute()
     {
-        // try {
-            action(args);
-        // }
-
-        // catch (Exception e) {
-        //     IoC.Resolve<IStrategy>("Game.Exceptions.FindExcHandlerForActions", action, args, e);
-        // }   
+        action(args);
     }
 }
