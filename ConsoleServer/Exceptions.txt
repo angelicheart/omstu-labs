@@ -1,1 +1,0 @@
-Soft Stop, Logfile cannot be read-only
