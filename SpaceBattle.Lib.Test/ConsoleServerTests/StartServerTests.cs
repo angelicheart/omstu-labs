@@ -36,6 +36,7 @@ public class StartServerTests
         str.Execute(n_threads);
     }
     
+    [Fact]
     public void StartServerCommandTest()
     {
         IoC.Resolve<ICommand>("StartServerCommand", n_threads).Execute();
