@@ -13,7 +13,7 @@ public class ConsoleServer
     {
         IoC.Resolve<ICommand>("StartServerCommand", n_threads).Execute();
         Console.WriteLine("Waiting for a press key . . .");
-        //Console.Read();
+        Console.Read();
         IoC.Resolve<ICommand>("StopServerCommand", n_threads).Execute();
     }
 }

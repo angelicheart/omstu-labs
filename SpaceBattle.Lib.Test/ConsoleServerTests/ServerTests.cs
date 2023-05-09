@@ -2,6 +2,8 @@ namespace SpaceBattle.Lib.Test;
 
 public class StopServerTests
 {
+    int n_threads = 5;
+    string exception_message = "SOLID";
     public StopServerTests()
     {
         new InitScopeBasedIoCImplementationCommand().Execute();
@@ -17,38 +19,52 @@ public class StopServerTests
         IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "StopServerCommand", (object[] args) => new StopServerStrategy().Execute(args)).Execute();
         IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Create And Start Thread", (object[] args) => MockThreadStrategy.Object.Execute(args)).Execute();
         IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Soft Stop The Thread", (object[] args) => MockThreadStrategy.Object.Execute(args)).Execute();
+        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "CatchException", (object[] args) => new HandlerStrategy().Execute(args)).Execute();
     }
 
     [Fact]
-    public void Test11()
+    public void StartServerCommandTest()
     {
-        ICommand cmd = new StartServerCommand(6);
+        ICommand cmd = new StartServerCommand(n_threads);
         cmd.Execute();
     }
 
     [Fact]
-    public void Test22()
+    public void StopServerCommandTest()
     {
-        ICommand cmd = new StopServerCommand(6);
+        ICommand cmd = new StopServerCommand(n_threads);
         cmd.Execute();
     }
 
     [Fact]
-    public void Test33()
+    public void ConsoleServerTest()
     {
-        var server = new ConsoleServer(6);
+        var server = new ConsoleServer(n_threads);
         server.Execute();
     }
 
     [Fact]
-    public void Test44()
+    public void StartServerStrategyTest()
     {
-        var str = new StartServerStrategy().Execute(6);
+        var str = new StartServerStrategy().Execute(n_threads);
     }
 
     [Fact]
-    public void Test55()
+    public void StopServerStrategyTest()
     {
-        var str = new StopServerStrategy().Execute(6);
+        var str = new StopServerStrategy().Execute(n_threads);
+    }
+
+    [Fact]
+    public void HandlerTest()
+    {
+        try
+        {
+            throw new Exception(exception_message);
+        }
+        catch (Exception e)
+        {
+            IoC.Resolve<ICommand>("CatchException", e.Message);
+        }
     }
 }
