@@ -13,6 +13,20 @@ public class HandlerTests
     }
 
     [Fact]
+    public void HandlerCommandTest()
+    {
+        var handler = new HandlerCommand(exception_message);
+        handler.Execute();
+    }
+
+    [Fact]
+    public void HandlerStrategyTest()
+    {
+        var handler = new HandlerStrategy();
+        handler.Execute(exception_message);
+    }
+
+    [Fact]
     public void CatchExceptionTest()
     {
         IoC.Resolve<ICommand>("CatchException", exception_message).Execute();

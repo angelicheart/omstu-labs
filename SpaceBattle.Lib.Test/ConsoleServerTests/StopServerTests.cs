@@ -22,6 +22,20 @@ public class StopServerTests
     }
 
     [Fact]
+    public void StopConsoleServerCommandTest()
+    {
+        var cmd = new StopServerCommand(n_threads);
+        cmd.Execute();
+    }
+
+    [Fact]
+    public void StopConsoleServerStrategyTest()
+    {
+        var str = new StopServerStrategy();
+        str.Execute(n_threads);
+    }
+
+    [Fact]
     public void StopServerCommandTest()
     {
         IoC.Resolve<ICommand>("StopServerCommand", n_threads).Execute();

@@ -21,7 +21,21 @@ public class StartServerTests
         IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "StartServerCommand", (object[] args) => StartServer.Execute(args)).Execute();
     }
 
+
     [Fact]
+    public void StartConsoleServerCommandTest()
+    {
+        var cmd = new StartServerCommand(n_threads);
+        cmd.Execute();
+    }
+
+    [Fact]
+    public void StartConsoleServerStrategyTest()
+    {
+        var str = new StartServerStrategy();
+        str.Execute(n_threads);
+    }
+    
     public void StartServerCommandTest()
     {
         IoC.Resolve<ICommand>("StartServerCommand", n_threads).Execute();
