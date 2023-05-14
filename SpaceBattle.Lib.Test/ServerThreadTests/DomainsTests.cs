@@ -7,11 +7,11 @@ public class DomainsTests
         new InitScopeBasedIoCImplementationCommand().Execute();
         IoC.Resolve<Hwdtech.ICommand>("Scopes.Current.Set", IoC.Resolve<object>("Scopes.New", IoC.Resolve<object>("Scopes.Root"))).Execute();
 
-        var rds = new RecieversDomainStrategy();
-        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Recievers.Domain", (object[] args) => rds.Execute(args)).Execute();
+        var rds = new ReceiversDomainStrategy();
+        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Receivers.Domain", (object[] args) => rds.Execute(args)).Execute();
 
-        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Recievers.Domain.Set", (object[] args) => new RecieversDomainSetStrategy().Execute(args)).Execute();
-        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Recievers.Domain.Get", (object[] args) => new RecieversDomainGetStrategy().Execute(args)).Execute();
+        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Receivers.Domain.Set", (object[] args) => new ReceiversDomainSetStrategy().Execute(args)).Execute();
+        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Receivers.Domain.Get", (object[] args) => new ReceiversDomainGetStrategy().Execute(args)).Execute();
     }
     
     [Fact]
@@ -23,11 +23,11 @@ public class DomainsTests
 
         queue.Add(command);
 
-        var reciever = new Mock<RecieverAdapter>(queue);
+        var Receiver = new Mock<ReceiverAdapter>(queue);
 
-        IoC.Resolve<ICommand>("Game.Recievers.Domain.Set", "1", reciever.Object).Execute();
+        IoC.Resolve<ICommand>("Game.Receivers.Domain.Set", "1", Receiver.Object).Execute();
 
-        Assert.Equal(command, IoC.Resolve<RecieverAdapter>("Game.Recievers.Domain.Get", "1").Recieve());
+        Assert.Equal(command, IoC.Resolve<IReceiver>("Game.Receivers.Domain.Get", "1").Receive());
     }
 
     [Fact]
@@ -35,12 +35,12 @@ public class DomainsTests
     {
         BlockingCollection<ICommand> queue = new BlockingCollection<ICommand>();
 
-        queue.Add(new ExceptionCommand());
+        queue.Add(new EmptyCommand());
 
-        var reciever = new Mock<RecieverAdapter>(queue);
+        var Receiver = new Mock<ReceiverAdapter>(queue);
 
-        IoC.Resolve<ICommand>("Game.Recievers.Domain.Set", "1", reciever.Object).Execute();
+        IoC.Resolve<ICommand>("Game.Receivers.Domain.Set", "1", Receiver.Object).Execute();
 
-        Assert.Throws<System.Collections.Generic.KeyNotFoundException>(() => IoC.Resolve<RecieverAdapter>("Game.Recievers.Domain.Get", "2").Recieve());
+        Assert.Throws<System.Collections.Generic.KeyNotFoundException>(() => IoC.Resolve<IReceiver>("Game.Receivers.Domain.Get", "2").Receive());
     }
 }

@@ -1,22 +1,22 @@
 namespace SpaceBattle.Lib;
 
-public class RecieversDomainSetCommand : ICommand
+public class ReceiversDomainSetCommand : ICommand
 {
     private string id;
-    private RecieverAdapter reciever;
-    public RecieversDomainSetCommand(string id, RecieverAdapter reciever)
+    private ReceiverAdapter Receiver;
+    public ReceiversDomainSetCommand(string id, ReceiverAdapter Receiver)
     {   
         this.id = id;
-        this.reciever = reciever;
+        this.Receiver = Receiver;
     }
     public void Execute()
     {
-        IoC.Resolve<ConcurrentDictionary<string, RecieverAdapter>>("Game.Recievers.Domain", "1")[id] = reciever;
+        IoC.Resolve<ConcurrentDictionary<string, ReceiverAdapter>>("Game.Receivers.Domain")[id] = Receiver;
     }
 } 
 
 public class ThreadsDomainSetCommand : ICommand
-{
+{   
     private string id;
     private ServerThread thread;
     public ThreadsDomainSetCommand(string id, ServerThread thread)
@@ -26,7 +26,7 @@ public class ThreadsDomainSetCommand : ICommand
     }
     public void Execute()
     {
-        IoC.Resolve<ConcurrentDictionary<string, ServerThread>>("Game.Threads.Domain", "1")[id] = thread;
+        IoC.Resolve<ConcurrentDictionary<string, ServerThread>>("Game.Threads.Domain")[id] = thread;
     }
 } 
 
@@ -41,6 +41,6 @@ public class SendersDomainSetCommand : ICommand
     }
     public void Execute()
     {
-        IoC.Resolve<ConcurrentDictionary<string, SenderAdapter>>("Game.Senders.Domain", "1")[id] = sender;
+        IoC.Resolve<ConcurrentDictionary<string, SenderAdapter>>("Game.Senders.Domain")[id] = sender;
     }
 } 

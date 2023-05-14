@@ -8,14 +8,11 @@ public class HardStopThreadStrategy : IStrategy
 
         ActionCommand action_after_stop;
 
-        if (args.Length == 2) 
-        action_after_stop = (ActionCommand) args[1];
-        
-        else
-        {
-            action_after_stop = new ActionCommand((arg) => {
-                new EmptyCommand();
-            });
+        if (args.Length == 2) {
+            action_after_stop = (ActionCommand) args[1];
+        }
+        else {
+            action_after_stop = new ActionCommand(() => new EmptyCommand().Execute());
         }
 
         return new HardStopThreadCommand(id, action_after_stop);

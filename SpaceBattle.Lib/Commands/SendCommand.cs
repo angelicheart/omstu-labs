@@ -13,6 +13,6 @@ public class SendCommand : ICommand
 
     public void Execute()
     {
-        IoC.Resolve<SenderAdapter>("Game.Senders.Domain.Get", id).Send(command);
+        IoC.Resolve<ISender>("Game.Senders.Domain.Get", id).Send(command);
     }
 }

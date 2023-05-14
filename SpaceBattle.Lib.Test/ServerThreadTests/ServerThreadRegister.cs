@@ -2,14 +2,11 @@ namespace SpaceBattle.Lib.Test;
 
 public class ServerThreadRegistryClass {
     public static void ServerThreadRegistry() {
-        new InitScopeBasedIoCImplementationCommand().Execute();
-        IoC.Resolve<Hwdtech.ICommand>("Scopes.Current.Set", IoC.Resolve<object>("Scopes.New", IoC.Resolve<object>("Scopes.Root"))).Execute();
-
         var tds = new ThreadsDomainStrategy();
         IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Threads.Domain", (object[] args) => tds.Execute(args)).Execute();
 
-        var rds = new RecieversDomainStrategy();
-        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Recievers.Domain", (object[] args) => rds.Execute(args)).Execute();
+        var rds = new ReceiversDomainStrategy();
+        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Receivers.Domain", (object[] args) => rds.Execute(args)).Execute();
 
         var sds = new SendersDomainStrategy();
         IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Senders.Domain", (object[] args) => sds.Execute(args)).Execute();
@@ -17,8 +14,8 @@ public class ServerThreadRegistryClass {
         IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Threads.Domain.Set", (object[] args) => new ThreadsDomainSetStrategy().Execute(args)).Execute();
         IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Threads.Domain.Get", (object[] args) => new ThreadsDomainGetStrategy().Execute(args)).Execute();
 
-        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Recievers.Domain.Set", (object[] args) => new RecieversDomainSetStrategy().Execute(args)).Execute();
-        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Recievers.Domain.Get", (object[] args) => new RecieversDomainGetStrategy().Execute(args)).Execute();
+        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Receivers.Domain.Set", (object[] args) => new ReceiversDomainSetStrategy().Execute(args)).Execute();
+        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Receivers.Domain.Get", (object[] args) => new ReceiversDomainGetStrategy().Execute(args)).Execute();
 
         IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Senders.Domain.Set", (object[] args) => new SendersDomainSetStrategy().Execute(args)).Execute();
         IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Senders.Domain.Get", (object[] args) => new SendersDomainGetStrategy().Execute(args)).Execute();

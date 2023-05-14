@@ -15,9 +15,12 @@ public class HardStopThreadCommand : ICommand
     {
         ServerThread st = IoC.Resolve<ServerThread>("Game.Threads.Domain.Get", id);
 
-        IoC.Resolve<ICommand>("Game.Senders.Send", id, new ActionCommand((arg) => {
+        if(Thread.CurrentThread == st.thread) {
             st.Stop();
             action_after_stop.Execute();
-        })).Execute();
+        }
+        else {
+            throw new Exception();
+        }
     }
 }

@@ -1,12 +1,12 @@
 namespace SpaceBattle.Lib;
 
-public class RecieverAdapter : IReciever
+public class ReceiverAdapter : IReceiver
 {
     public BlockingCollection<ICommand> queue;
 
-    public RecieverAdapter(BlockingCollection<ICommand> queue) => this.queue = queue;
+    public ReceiverAdapter(BlockingCollection<ICommand> queue) => this.queue = queue;
 
-    public ICommand Recieve()
+    public ICommand Receive()
     {
         return queue.Take();
     }

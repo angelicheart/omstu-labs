@@ -10,20 +10,18 @@ public class CreateAndStartThreadStrategy : IStrategy
 
         if (args.Length == 2) 
         action = (ActionCommand) args[1];
-         
-        else
-        {
-            action = new ActionCommand((arg) => {new EmptyCommand();});
+        else {
+            action = new ActionCommand(() => new EmptyCommand().Execute());
         }
 
         queue.Add(action);
         
-        RecieverAdapter reciever = new RecieverAdapter(queue);
+        ReceiverAdapter Receiver = new ReceiverAdapter(queue);
         SenderAdapter sender = new SenderAdapter(queue);
-        ServerThread st = new ServerThread(reciever);
+        ServerThread st = new ServerThread(Receiver);
 
         string id = (string)args[0];
 
-        return new CreateAndStartThreadCommand(id, reciever, sender, st);
+        return new CreateAndStartThreadCommand(id, Receiver, sender, st);
     }
 }
