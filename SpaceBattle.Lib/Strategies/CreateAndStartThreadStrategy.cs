@@ -8,8 +8,9 @@ public class CreateAndStartThreadStrategy : IStrategy
 
         ActionCommand action;
 
-        if (args.Length == 2) 
-        action = (ActionCommand) args[1];
+        if (args.Length == 2) {
+            action = (ActionCommand) args[1];
+        }
         else {
             action = new ActionCommand(() => new EmptyCommand().Execute());
         }
