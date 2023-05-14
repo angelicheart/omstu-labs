@@ -17,12 +17,12 @@ public class CreateAndStartThreadStrategy : IStrategy
 
         queue.Add(action);
         
-        ReceiverAdapter Receiver = new ReceiverAdapter(queue);
+        ReceiverAdapter reciever = new ReceiverAdapter(queue);
         SenderAdapter sender = new SenderAdapter(queue);
-        ServerThread st = new ServerThread(Receiver);
+        ServerThread st = new ServerThread(reciever);
 
         string id = (string)args[0];
 
-        return new CreateAndStartThreadCommand(id, Receiver, sender, st);
+        return new CreateAndStartThreadCommand(id, reciever, sender, st);
     }
 }
