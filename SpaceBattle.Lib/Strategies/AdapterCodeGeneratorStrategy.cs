@@ -33,22 +33,11 @@ public class AdapterCodeGeneratorStrategy : IStrategy
             }}
             ";
         }   
-
-        MethodInfo[] methods = adapterType.GetMethods(BindingFlags.Public | BindingFlags.Instance);
-
-        String smethods = string.Empty;
-
-        foreach (MethodInfo m in methods) {
-            smethods += $@"{m} {{ IoC.Resolve<IStrategy>(""Game.{m.Name}.Set"", target, ) }}";
-        } 
-
-
-            
+        
         string AdapterCode = @$"class {adapterName}Adapter : {adapterType.Name} {{
         {targetType.Name} target;
         public {adapterName}Adapter({targetType.Name} target) => this.target = target; 
         {sproperties}
-        {smethods}
         }}";
 
         AdapterCode = Regex.Replace(AdapterCode, @"^\s+$[\r\n]*", string.Empty, RegexOptions.Multiline);

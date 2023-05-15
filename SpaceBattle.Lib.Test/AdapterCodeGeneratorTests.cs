@@ -40,22 +40,7 @@ public class AdapterCodeGeneratorTests
             }
         }";
 
-        String SenderAdapterCode = @"class SenderAdapter : ISender {
-        Object target;
-        public SenderAdapter(Object target) => this.target = target; 
-        Void Send(SpaceBattle.Lib.ICommand);
-        }";
-
-        // MethodInfo[] methods = typeof(ISender).GetMethods(BindingFlags.Public | BindingFlags.Instance);
-
-        // foreach (MethodInfo m in methods) {
-        //     output.WriteLine("" + m);
-        // } 
-
-        output.WriteLine(IoC.Resolve<String>("Game.Reflection.GenerateAdapterCode", typeof(ISender), typeof(object)));
-
-
-        // Assert.Equal(MovableAdapterCode, IoC.Resolve<String>("Game.Reflection.GenerateAdapterCode", typeof(IMovable), typeof(object)));
-        // Assert.Equal(RotatableAdapterCode, IoC.Resolve<String>("Game.Reflection.GenerateAdapterCode", typeof(IRotatable), typeof(object)));
+        Assert.Equal(MovableAdapterCode, IoC.Resolve<String>("Game.Reflection.GenerateAdapterCode", typeof(IMovable), typeof(object)));
+        Assert.Equal(RotatableAdapterCode, IoC.Resolve<String>("Game.Reflection.GenerateAdapterCode", typeof(IRotatable), typeof(object)));
     }
 }
