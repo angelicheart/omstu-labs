@@ -7,10 +7,11 @@ public class AdapterCodeGeneratorStrategy : IStrategy
     {
         Type adapterType = (Type) args[0];
         Type targetType = (Type) args[1];
+        
 
         String adapterName = adapterType.Name.Substring(1);
 
-        PropertyInfo[] properties = adapterType.GetProperties(BindingFlags.Public | BindingFlags.Instance);   
+        PropertyInfo[] properties = adapterType.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);   
 
         string sproperties = string.Empty;
 
@@ -26,18 +27,43 @@ public class AdapterCodeGeneratorStrategy : IStrategy
                 set = $@"set {{ IoC.Resolve<ICommand>(""Game.{p.Name}.Set"", target, value).Execute(); }}";
             }
 
-            sproperties += $@"
+            sproperties += 
+            $@"
             {p.PropertyType.Name} {p.Name} {{
             {get}
             {set}
             }}
             ";
-        }   
+        }  
+    
+
+        IEnumerable<MethodInfo> methods = adapterType.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).Where(m => !m.IsSpecialName);;
+
+        string smethods = string.Empty;
+
+        foreach (MethodInfo m in methods) {
+            
+            ParameterInfo[] parameters = m.GetParameters();
+            string sparameters = string.Empty;
+            foreach (ParameterInfo p in parameters)
+            {
+                sparameters += @$"{p.ParameterType.Name} {p.Name}";   
+            }
+
+            smethods +=
+            $@"
+            {m.ReturnType.Name.ToLower()} {m.Name} ({sparameters}) {{
+                return IoC.Resolve<{m.ReturnType}>(""Game.{m.Name}.Command"", {sparameters});
+            }}
+            ";
+        }
+
         
         string AdapterCode = @$"class {adapterName}Adapter : {adapterType.Name} {{
-        {targetType.Name} target;
-        public {adapterName}Adapter({targetType.Name} target) => this.target = target; 
+        {targetType} target;
+        public {adapterName}Adapter({targetType} target) => this.target = target; 
         {sproperties}
+        {smethods}
         }}";
 
         AdapterCode = Regex.Replace(AdapterCode, @"^\s+$[\r\n]*", string.Empty, RegexOptions.Multiline);
