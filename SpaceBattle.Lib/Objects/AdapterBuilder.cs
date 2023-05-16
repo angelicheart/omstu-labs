@@ -1,7 +1,5 @@
 namespace SpaceBattle.Lib;
 
-using System.Text.RegularExpressions;
-
 public class AdapterBuilder {
     private string adaptername;
     private string adaptertypename;
