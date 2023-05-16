@@ -1,55 +1,108 @@
-// namespace SpaceBattle.Lib;
+namespace SpaceBattle.Lib;
 
-// using System.Text.RegularExpressions;
-// using Scriban;
+using System.Text.RegularExpressions;
 
-// public class AdapterBuilder {
-//     private string adaptername;
-//     private string adaptertype;
-//     private string targettype;
-//     private string properties;
-//     private string methods;
+public class AdapterBuilder {
+    private string adaptername;
+    private string adaptertypename;
+    private string targettypename;
+    private string properties;
+    private string methods;
 
-//     public AdapterBuilder (Type adaptertype, Type targettype) {
-//         this.adaptername = adaptertype.Name.Substring(1);
-//         this.adaptertype = adaptertype.Name;
-//         this.targettype = targettype.Name;
-//     }
+    public AdapterBuilder (Type adaptertype, Type targettype) {
+        this.adaptername = adaptertype.Name.Substring(1);
+        this.adaptertypename = adaptertype.Name;
+        this.targettypename = FormatGenericType(targettype);
+    }
 
-//     public string CreateMethod() {
+    public void CreateMethod(MethodInfo m) {
+        string methodreturnname = FormatGenericType(m.ReturnType);
+        string sparameters, sparametersnames;
+            
+        ParameterInfo[] parameters = m.GetParameters();
 
-//     }
+        if(parameters.Length == 0) {
+            sparameters = string.Empty;
+            sparametersnames = string.Empty;
+        }
+        else {
+            sparameters = ", ";
+            sparametersnames = ", ";
+            foreach (ParameterInfo p in parameters) {
+                sparameters += @$"{FormatGenericType(p.ParameterType)} {p.Name}, ";  
+                sparametersnames += @$"{p.Name}, ";
+            }
+            sparameters = sparameters.Remove(sparameters.Length-2);
+            sparametersnames = sparametersnames.Remove(sparametersnames.Length-2);
+        }
 
-//     public void CreateProperty(bool canread, bool canwrite, string propertytypename, string propertyname) {
-//         string get = string.Empty, set = string.Empty;
+        if (methodreturnname == "Void") {
+            methods +=
+        $@"
+        public void {m.Name} ({sparameters.Substring(2)}) {{
+            IoC.Resolve<ICommand>(""Game.{m.Name}.Command"", target{sparametersnames}).Execute();
+        }}
+            ";
+        }
+        else {
+        methods +=
+        $@"
+        public {methodreturnname} {m.Name} ({sparameters}) {{
+            return IoC.Resolve<{methodreturnname}>(""Game.{m.Name}.Strategy"", target{sparametersnames});
+        }}
+        ";
+        }
+    }
 
-//         if (canread) {
-//             get = $@"get {{ return IoC.Resolve<{propertytypename}>(""Game.{propertyname}.Get"", target); }}";
-//         }
+    public void CreateProperty(PropertyInfo p) {
+        string get = string.Empty, set = string.Empty;
 
-//         if (canwrite) {
-//             set = $@"set {{ IoC.Resolve<ICommand>(""Game.{propertyname}.Set"", target, value).Execute(); }}";
-//         }
+        string propertyname = FormatGenericType(p.PropertyType);
 
-//         properties += 
-//         $@"
-//         {propertytypename} {propertyname} {{
-//         {get}
-//         {set}
-//         }}
-//         ";
-//     }
+        if (p.CanRead) {
+            get = $@"   get {{ return IoC.Resolve<{propertyname}>(""Game.{p.Name}.Get"", target); }}";
+        }
 
-//     public string Build() {
-//         var tpl = @$"
-//         class {adaptername}Adapter : {adaptertype} {{
-//         {targettype} target;
-//         public {adaptername}Adapter({targettype} target) => this.target = target; 
-//         {properties}
-//         }}";
+        if (p.CanWrite) {
+            set = $@"   set {{ IoC.Resolve<ICommand>(""Game.{p.Name}.Set"", target, value).Execute(); }}";
+        }
 
-//         var template = Template.Parse(tpl);
-//         var result = 
+        properties += 
+        $@"
+        public {propertyname} {p.Name} {{
+            {get}
+            {set}
+        }}
+        ";
+    }
 
-//     }
-// }
+    private string FormatGenericType(Type type)
+    {
+        string typeName = type.Name; 
+
+        if (type.IsGenericType)
+        {
+            typeName = typeName.Substring(0, typeName.IndexOf('`'));
+
+            Type[] typeArgs = type.GetGenericArguments();
+            string[] typeArgNames = new string[typeArgs.Length];
+            for (int i = 0; i < typeArgs.Length; i++){
+                typeArgNames[i] = FormatGenericType(typeArgs[i]);
+            }
+            typeName = $"{typeName}<{string.Join(", ", typeArgNames)}>";
+        }
+        return typeName;
+    }
+
+    public string Build() {
+        string result = @$"class {adaptername}Adapter : {adaptertypename} {{
+        {targettypename} target;
+        public {adaptername}Adapter({targettypename} target) => this.target = target; 
+        {properties}
+        {methods}
+    }}";
+
+        result = Regex.Replace(result, @"^\s+$[\r\n]*", string.Empty, RegexOptions.Multiline);
+        return result;
+    }
+}

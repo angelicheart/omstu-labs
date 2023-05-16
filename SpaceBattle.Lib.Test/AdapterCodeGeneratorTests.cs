@@ -16,36 +16,81 @@ public class AdapterCodeGeneratorTests
     [Fact]
     public void AdapterCodeGeneratorTest_1()
     {
+        // public interface IReceiver
+        // {
+        //     ICommand Receive();
+        //     bool isEmpty();
+        // }
+        
+        String ReciverAdapterGenericTargetCode = 
+        @"class ReceiverAdapter : IReceiver {
+        BlockingCollection<ICommand> target;
+        public ReceiverAdapter(BlockingCollection<ICommand> target) => this.target = target; 
+        public ICommand Receive () {
+            return IoC.Resolve<ICommand>(""Game.Receive.Strategy"", target);
+        }
+        public Boolean isEmpty () {
+            return IoC.Resolve<Boolean>(""Game.isEmpty.Strategy"", target);
+        }
+    }";
+
+        // public interface IMoveStartable
+        // {
+        //     public IUObject obj { get; }
+        //     public Vector velocity { get; }
+        //     public IQueue<ICommand> queue { get; }
+        // }
+
+        String MoveStartableAdapterCode = 
+        @"class MoveStartableAdapter : IMoveStartable {
+        Object target;
+        public MoveStartableAdapter(Object target) => this.target = target; 
+        public IUObject obj {
+               get { return IoC.Resolve<IUObject>(""Game.obj.Get"", target); }
+        }
+        public Vector velocity {
+               get { return IoC.Resolve<Vector>(""Game.velocity.Get"", target); }
+        }
+        public IQueue<ICommand> queue {
+               get { return IoC.Resolve<IQueue<ICommand>>(""Game.queue.Get"", target); }
+        }
+    }";
+
+        // public interface ISender {
+        //     void Send(ICommand command);
+        // }   
+
+        String SenderAdapterCode = 
+        @"class SenderAdapter : ISender {
+        BlockingCollection<ICommand> target;
+        public SenderAdapter(BlockingCollection<ICommand> target) => this.target = target; 
+        public void Send (ICommand command) {
+            IoC.Resolve<ICommand>(""Game.Send.Command"", target, command).Execute();
+        }
+    }";
+
+        // public interface IMovable
+        // {
+        //     Vector position { get; set; }
+        //     Vector velocity { get; }
+        // }
+
         String MovableAdapterCode = 
-        @"
-        class MovableAdapter : IMovable {
-        Object target;
-        public MovableAdapter(Object target) => this.target = target; 
-            Vector position {
-            get { return IoC.Resolve<Vector>(""Game.position.Get"", target); }
-            set { IoC.Resolve<ICommand>(""Game.position.Set"", target, value).Execute(); }
-            }
-            Vector velocity {
-            get { return IoC.Resolve<Vector>(""Game.velocity.Get"", target); }
-            }
-        }";
+        @"class MovableAdapter : IMovable {
+        Vector target;
+        public MovableAdapter(Vector target) => this.target = target; 
+        public Vector position {
+               get { return IoC.Resolve<Vector>(""Game.position.Get"", target); }
+               set { IoC.Resolve<ICommand>(""Game.position.Set"", target, value).Execute(); }
+        }
+        public Vector velocity {
+               get { return IoC.Resolve<Vector>(""Game.velocity.Get"", target); }
+        }
+    }";
 
-        String RotatableAdapterCode = @"
-        class RotatableAdapter : IRotatable {
-        Object target;
-        public RotatableAdapter(Object target) => this.target = target; 
-            Angle angleVelocty {
-            get { return IoC.Resolve<Angle>(""Game.angleVelocty.Get"", target); }
-            }
-            Angle Direction {
-            get { return IoC.Resolve<Angle>(""Game.Direction.Get"", target); }
-            set { IoC.Resolve<ICommand>(""Game.Direction.Set"", target, value).Execute(); }
-            }
-        }";
-
-        output.WriteLine(IoC.Resolve<String>("Game.Reflection.GenerateAdapterCode", typeof(IMoveStartable), typeof(object)));
-
-        // Assert.Equal(MovableAdapterCode, IoC.Resolve<String>("Game.Reflection.GenerateAdapterCode", typeof(IMovable), typeof(object)));
-        // Assert.Equal(RotatableAdapterCode, IoC.Resolve<String>("Game.Reflection.GenerateAdapterCode", typeof(IRotatable), typeof(object)));
+        Assert.Equal(ReciverAdapterGenericTargetCode, IoC.Resolve<String>("Game.Reflection.GenerateAdapterCode", typeof(IReceiver), typeof(BlockingCollection<ICommand>)));
+        Assert.Equal(MoveStartableAdapterCode, IoC.Resolve<String>("Game.Reflection.GenerateAdapterCode", typeof(IMoveStartable), typeof(object)));
+        Assert.Equal(SenderAdapterCode, IoC.Resolve<String>("Game.Reflection.GenerateAdapterCode", typeof(ISender), typeof(BlockingCollection<ICommand>)));
+        Assert.Equal(MovableAdapterCode,IoC.Resolve<String>("Game.Reflection.GenerateAdapterCode", typeof(IMovable), typeof(Vector)));
     }
 }
