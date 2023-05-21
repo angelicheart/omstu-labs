@@ -15,14 +15,13 @@ public class StopServerCommand : ICommand
         {
             for (int id = 0; id < n_threads; id++)
             {
-                IoC.Resolve<ICommand>("Soft Stop The Thread", id).Execute();
-                Console.WriteLine("Thread №" + id + " stopped. . .");
+                string thread_id = Convert.ToString(id);
+                IoC.Resolve<ICommand>("Game.Senders.Send", thread_id, IoC.Resolve<ICommand>("Game.Threads.SoftStop", thread_id)).Execute();
             }
         }
         catch (Exception e)
         {
-            IoC.Resolve<ICommand>("CatchException", "Soft Stop, " + e.Message).Execute();
+            IoC.Resolve<ICommand>("CatchException", "Soft Stop Thread, " + e.Message).Execute();
         }
-        Console.WriteLine("All threads are killed. Done!");
     }
 }

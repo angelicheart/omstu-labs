@@ -11,9 +11,11 @@ public class ConsoleServer
 
     public void Execute()
     {
+        Console.WriteLine("Starting the server...");
         IoC.Resolve<ICommand>("StartServerCommand", n_threads).Execute();
         Console.WriteLine("Waiting for a press key . . .");
         Console.Read();
+        Console.WriteLine("Stopping the server...");
         IoC.Resolve<ICommand>("StopServerCommand", n_threads).Execute();
     }
 }

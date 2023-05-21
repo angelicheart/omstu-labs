@@ -11,11 +11,17 @@ public class StartServerCommand : ICommand
 
     public void Execute()
     {
-        for (int id = 0; id < n_threads; id++)
+        try
         {
-            IoC.Resolve<ICommand>("Create And Start Thread", id).Execute();
-            Console.WriteLine("Thread №" + id + " starting. . .");
+            for (int id = 0; id < n_threads; id++)
+            {
+                string thread_id = Convert.ToString(id);
+                IoC.Resolve<ICommand>("Game.Threads.CreateAndStart", thread_id).Execute();
+            }
         }
-        Console.WriteLine("All threads are running. Done!");
+        catch (Exception e)
+        {
+            IoC.Resolve<ICommand>("CatchException", "Start Thread, " + e.Message).Execute();
+        }
     }
 }
