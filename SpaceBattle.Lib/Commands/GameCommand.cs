@@ -29,7 +29,7 @@ public class GameCommand : ICommand
                 cmd.Execute();
             }
             catch (Exception e) {
-                IoC.Resolve<IStrategy>("Game.Exception.FindExceptionHandlerForCmd").Execute(cmd, e);
+                IoC.Resolve<ICommand>("Game.Exception.FindExceptionHandlerForCmd", cmd, e).Execute();
             }
         }
 

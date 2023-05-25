@@ -13,7 +13,7 @@ public class DefaultExceptionHandlerCommand : ICommand
     
     public void Execute()
     {   
-        IDictionary<ICommand, Exception> excDict = IoC.Resolve<IDictionary<ICommand, Exception>>("Game.ICommand_Exception.Dict.Get");
+        Dictionary<ICommand, Exception> excDict = IoC.Resolve<Dictionary<ICommand, Exception>>("Game.ICommand_Exception.Dict.Get");
         excDict.Add(command, exception);
     }
 }
