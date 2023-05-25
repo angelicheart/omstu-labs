@@ -73,6 +73,7 @@ public class GameCommandTests
         BlockingCollection<ICommand> gameQueue = new BlockingCollection<ICommand>();
 
         gameQueue.Add(new ActionCommand(() => throw new Exception()));
+        gameQueue.Add(new ActionCommand(() => throw new Exception()));
         gameQueue.Add(new ActionCommand(() => quantumStrategy.Setup(qs => qs.Execute()).Returns(0)));
 
         ICommand gameCommand = new GameCommand(scope, gameQueue);
@@ -80,7 +81,7 @@ public class GameCommandTests
         gameCommand.Execute();
 
         Assert.True(gameQueue.Count() == 0);
-        Assert.Equal(IoC.Resolve<IDictionary<ICommand, Exception>>("Game.ICommand_Exception.Dict.Get").Count(), 1);
+        Assert.Equal(2, IoC.Resolve<IDictionary<ICommand, Exception>>("Game.ICommand_Exception.Dict.Get").Count());
     }
 
     [Fact]
