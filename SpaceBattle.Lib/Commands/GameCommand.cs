@@ -21,7 +21,7 @@ public class GameCommand : ICommand
 
         stopwatch.Start();
 
-        while(stopwatch.ElapsedMilliseconds <= IoC.Resolve<int>("Game.GetQuantum"))
+        while(stopwatch.ElapsedMilliseconds <= IoC.Resolve<int>("Game.Quantum.Get"))
         {
             var cmd = reciver.Receive();
                 
@@ -30,7 +30,7 @@ public class GameCommand : ICommand
             }
             catch (Exception e) {
                 IoC.Resolve<IStrategy>("Game.Exception.FindExceptionHandlerForCmd").Execute(cmd, e);
-            }   
+            }
         }
 
         stopwatch.Stop();
