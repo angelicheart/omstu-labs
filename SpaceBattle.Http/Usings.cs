@@ -1,2 +1,6 @@
 global using CoreWCF;
-global using System.Runtime.Serialization;
+global using Newtonsoft.Json;
+global using Hwdtech;
+global using System.Net;
+global using Microsoft.Extensions.DependencyInjection;
+global using CoreWCF.Configuration;
