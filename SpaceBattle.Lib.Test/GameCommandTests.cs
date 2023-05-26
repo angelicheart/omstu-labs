@@ -19,16 +19,16 @@ public class GameCommandTests
         IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Quantum.Get", (object[] args) => quantumStrategy.Object.Execute()).Execute();
 
         BlockingCollection<ICommand> gameQueue = new BlockingCollection<ICommand>();
+        ReceiverAdapter receiver = new ReceiverAdapter(gameQueue);
 
         gameQueue.Add(new ActionCommand(() => new EmptyCommand().Execute()));
         gameQueue.Add(new ActionCommand(() => new EmptyCommand().Execute()));
-        gameQueue.Add(new ActionCommand(() => quantumStrategy.Setup(qs => qs.Execute()).Returns(0)));
 
-        ICommand gameCommand = new GameCommand(scope, gameQueue);
+        ICommand gameCommand = new GameCommand(scope, receiver);
 
         gameCommand.Execute();
 
-        Assert.True(gameQueue.Count() == 0);
+        Assert.True(receiver.isEmpty());
     }
         
     [Fact]
@@ -43,15 +43,16 @@ public class GameCommandTests
         IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Quantum.Get", (object[] args) => quantumStrategy.Object.Execute()).Execute();
 
         BlockingCollection<ICommand> gameQueue = new BlockingCollection<ICommand>();
+        ReceiverAdapter receiver = new ReceiverAdapter(gameQueue);
 
         gameQueue.Add(new ActionCommand(() => Task.Delay(1100).Wait()));
         gameQueue.Add(new ActionCommand(() => new EmptyCommand().Execute()));
 
-        ICommand gameCommand = new GameCommand(scope, gameQueue);
+        ICommand gameCommand = new GameCommand(scope, receiver);
 
         gameCommand.Execute();
 
-        Assert.False(gameQueue.Count() == 0);
+        Assert.False(receiver.isEmpty());
     }
 
     [Fact]
@@ -71,16 +72,16 @@ public class GameCommandTests
         IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Exception.FindExceptionHandlerForCmd", (object[] args) => new DefaultExceptionHandlerStrategy().Execute(args)).Execute();
 
         BlockingCollection<ICommand> gameQueue = new BlockingCollection<ICommand>();
+        ReceiverAdapter receiver = new ReceiverAdapter(gameQueue);
 
         gameQueue.Add(new ActionCommand(() => throw new Exception()));
         gameQueue.Add(new ActionCommand(() => throw new Exception()));
-        gameQueue.Add(new ActionCommand(() => quantumStrategy.Setup(qs => qs.Execute()).Returns(0)));
 
-        ICommand gameCommand = new GameCommand(scope, gameQueue);
+        ICommand gameCommand = new GameCommand(scope, receiver);
 
         gameCommand.Execute();
 
-        Assert.True(gameQueue.Count() == 0);
+        Assert.True(receiver.isEmpty());
         Assert.Equal(2, IoC.Resolve<IDictionary<ICommand, Exception>>("Game.ICommand_Exception.Dict.Get").Count());
     }
 
@@ -94,10 +95,11 @@ public class GameCommandTests
         quantumStrategy.Setup(qs => qs.Execute()).Returns(1000);
 
         BlockingCollection<ICommand> gameQueue = new BlockingCollection<ICommand>();
+        ReceiverAdapter receiver = new ReceiverAdapter(gameQueue);
 
         gameQueue.Add(new ActionCommand(() => new EmptyCommand().Execute()));
 
-        ICommand gameCommand = new GameCommand(scope, gameQueue);
+        ICommand gameCommand = new GameCommand(scope, receiver);
 
         Assert.ThrowsAny<Exception>(() => gameCommand.Execute());
     }

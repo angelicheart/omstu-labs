@@ -3,31 +3,31 @@ namespace SpaceBattle.Lib;
 public class GameCommand : ICommand
 {
     object scope;
-    BlockingCollection<ICommand> gameQueue;
+    IReceiver receiver;
+    Stopwatch stopwatch = new Stopwatch();
     
-    public GameCommand(object scope, BlockingCollection<ICommand> gameQueue)
+    public GameCommand(object scope, IReceiver receiver)
     {
         this.scope = scope;
-        this.gameQueue = gameQueue;
+        this.receiver = receiver;
     }
 
     public void Execute()
     {
         IoC.Resolve<Hwdtech.ICommand>("Scopes.Current.Set", scope).Execute();
 
-        IReceiver reciver = new ReceiverAdapter(gameQueue);
-
-        var stopwatch = new Stopwatch();
+        Int32 GameTime = IoC.Resolve<int>("Game.Quantum.Get");
 
         stopwatch.Start();
 
-        while(stopwatch.ElapsedMilliseconds <= IoC.Resolve<int>("Game.Quantum.Get"))
+        while(stopwatch.ElapsedMilliseconds <= GameTime && !receiver.isEmpty())
         {
-            var cmd = reciver.Receive();
+            var cmd = receiver.Receive();
                 
             try {
                 cmd.Execute();
             }
+
             catch (Exception e) {
                 IoC.Resolve<ICommand>("Game.Exception.FindExceptionHandlerForCmd", cmd, e).Execute();
             }
