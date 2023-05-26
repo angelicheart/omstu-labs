@@ -1,8 +1,7 @@
 namespace SpaceBattle.Http;
 
 [ServiceContract]
-public interface IMessageProcessor
-{
+public interface IMessageProcessor {
     [OperationContract]
-    HttpStatusCode ProcessMessage(string messageJson);
+    HttpStatusCode ProcessMessage(Message message);
 }

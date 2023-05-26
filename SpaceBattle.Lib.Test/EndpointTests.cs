@@ -20,7 +20,7 @@ public class EndpointTests
         var CommandStrategy = new Mock<IStrategy>();
         CommandStrategy.Setup(c => c.Execute(It.IsAny<object[]>())).Returns(command.Object);
 
-        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Command.Generate", (object[] args) => CommandStrategy.Object.Execute()).Execute();
+        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Message.Processor", (object[] args) => CommandStrategy.Object.Execute()).Execute();
     }
 
     [Fact]
@@ -38,8 +38,6 @@ public class EndpointTests
             }
         };
 
-        string jsonMessage = JsonConvert.SerializeObject(message);
-
         var services = new ServiceCollection();
         var startup = new Startup();
         startup.ConfigureServices(services);
@@ -47,7 +45,7 @@ public class EndpointTests
 
         var messageProcessor = serviceProvider.GetRequiredService<IMessageProcessor>();
 
-        var result = messageProcessor.ProcessMessage(jsonMessage);
+        var result = messageProcessor.ProcessMessage(message);
 
         Assert.Equal(HttpStatusCode.OK, result);
         Assert.Single(IoC.Resolve<ConcurrentDictionary<string, SenderAdapter>>("Game.Senders.Domain", "asdfg"));
@@ -65,8 +63,6 @@ public class EndpointTests
             GameID = "asdfg",
         };
 
-        string jsonMessage = JsonConvert.SerializeObject(message);
-
         var services = new ServiceCollection();
         var startup = new Startup();
         startup.ConfigureServices(services);
@@ -74,7 +70,7 @@ public class EndpointTests
 
         var messageProcessor = serviceProvider.GetRequiredService<IMessageProcessor>();
 
-        var result = messageProcessor.ProcessMessage(jsonMessage);
+        var result = messageProcessor.ProcessMessage(message);
 
         Assert.Equal(HttpStatusCode.OK, result);
         Assert.Single(IoC.Resolve<ConcurrentDictionary<string, SenderAdapter>>("Game.Senders.Domain", "asdfg"));
