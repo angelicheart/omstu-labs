@@ -1,13 +1,14 @@
 namespace SpaceBattle.Http;
 
+[DataContract]
 public class Message {
-    [JsonProperty("GameID")]
+    [DataMember(Name ="GameID")]
     public string GameID { get; set; }
 
-    [JsonProperty("CommandName")]
+    [DataMember(Name ="CommandName")]
     public string CommandName { get; set; }
 
-    [JsonProperty("args", NullValueHandling = NullValueHandling.Ignore)]
+    [DataMember(Name ="args")]
     public Dictionary<string, string> args { get; set; }
 }
     
