@@ -20,7 +20,12 @@ public class EndpointTests
         var CommandStrategy = new Mock<IStrategy>();
         CommandStrategy.Setup(c => c.Execute(It.IsAny<object[]>())).Returns(command.Object);
 
+        var ThreadIDMock = new Mock<IStrategy>();
+        ThreadIDMock.Setup(c => c.Execute(It.IsAny<object[]>())).Returns("asdfg");
+
         IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Message.Processor", (object[] args) => CommandStrategy.Object.Execute()).Execute();
+
+        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.GetThreadIDByGameID", (object[] args) => ThreadIDMock.Object.Execute()).Execute();
     }
 
     [Fact]
@@ -38,12 +43,7 @@ public class EndpointTests
             }
         };
 
-        var services = new ServiceCollection();
-        var startup = new Startup();
-        startup.ConfigureServices(services);
-        var serviceProvider = services.BuildServiceProvider();
-
-        var messageProcessor = serviceProvider.GetRequiredService<IMessageProcessor>();
+        var messageProcessor = new MessageProcessor();
 
         var result = messageProcessor.ProcessMessage(message);
 
@@ -63,16 +63,34 @@ public class EndpointTests
             GameID = "asdfg",
         };
 
-        var services = new ServiceCollection();
-        var startup = new Startup();
-        startup.ConfigureServices(services);
-        var serviceProvider = services.BuildServiceProvider();
-
-        var messageProcessor = serviceProvider.GetRequiredService<IMessageProcessor>();
+        var messageProcessor = new MessageProcessor();
 
         var result = messageProcessor.ProcessMessage(message);
 
         Assert.Equal(HttpStatusCode.OK, result);
         Assert.Single(IoC.Resolve<ConcurrentDictionary<string, SenderAdapter>>("Game.Senders.Domain", "asdfg"));
+    }
+    
+    [Fact]
+    public async Task Application_ShouldReturnOKStatus()
+    {
+        var message = new Message {
+            CommandName = "fire",
+            GameID = "asdfg",
+        };
+
+        IWebHostBuilder webhostbuilder = WebHost.CreateDefaultBuilder().UseStartup<Startup>();
+        IWebHost host = webhostbuilder.Build();
+
+        var client = new HttpClient();
+
+        await host.StartAsync();
+
+        var response = await client.GetAsync("http://localhost:5000/MessageProcessor/basicHttp");
+
+         await host.StopAsync();
+        host.Dispose();
+
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
 }
