@@ -18,19 +18,18 @@ public class GameCommand : ICommand
 
         Int32 GameTime = IoC.Resolve<int>("Game.Quantum.Get");
 
+        stopwatch.Reset();
+
         stopwatch.Start();
 
-        while(stopwatch.ElapsedMilliseconds <= GameTime && !receiver.isEmpty())
-        {
+        while(stopwatch.ElapsedMilliseconds <= GameTime && !receiver.isEmpty()) {
             var cmd = receiver.Receive();
                 
             try {
                 cmd.Execute();
             }
-
             catch (Exception e) {
-                IoC.Resolve<ICommand>("Game.Exception.FindExceptionHandlerForCmd", cmd, e).Execute();
-            }
+                IoC.Resolve<ICommand>("Game.Exception.FindExceptionHandlerForCmd", cmd, e).Execute(); }
         }
 
         stopwatch.Stop();

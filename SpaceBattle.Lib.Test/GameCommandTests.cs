@@ -61,15 +61,14 @@ public class GameCommandTests
         object scope = IoC.Resolve<object>("Scopes.New", IoC.Resolve<object>("Scopes.Root"));
         IoC.Resolve<Hwdtech.ICommand>("Scopes.Current.Set", scope).Execute();
 
+        var DefaultExceptionHandler = new DefaultExceptionHandlerStrategy();
+
+        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Exception.FindExceptionHandlerForCmd", (object[] args) => DefaultExceptionHandler.Execute(args)).Execute();
+
         var quantumStrategy = new Mock<IStrategy>();
         quantumStrategy.Setup(qs => qs.Execute()).Returns(1000);
 
         IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Quantum.Get", (object[] args) => quantumStrategy.Object.Execute()).Execute();
-
-        var cess = new CommandExceptionStorageStrategy();
-        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.ICommand_Exception.Dict.Get", (object[] args) => cess.Execute(args)).Execute();       
-
-        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Exception.FindExceptionHandlerForCmd", (object[] args) => new DefaultExceptionHandlerStrategy().Execute(args)).Execute();
 
         BlockingCollection<ICommand> gameQueue = new BlockingCollection<ICommand>();
         ReceiverAdapter receiver = new ReceiverAdapter(gameQueue);
@@ -79,10 +78,7 @@ public class GameCommandTests
 
         ICommand gameCommand = new GameCommand(scope, receiver);
 
-        gameCommand.Execute();
-
-        Assert.True(receiver.isEmpty());
-        Assert.Equal(2, IoC.Resolve<IDictionary<ICommand, Exception>>("Game.ICommand_Exception.Dict.Get").Count());
+        Assert.ThrowsAny<Exception>(() => gameCommand.Execute());
     }
 
     [Fact]

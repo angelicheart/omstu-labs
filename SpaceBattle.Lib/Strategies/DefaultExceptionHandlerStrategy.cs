@@ -7,6 +7,6 @@ public class DefaultExceptionHandlerStrategy : IStrategy
         ICommand Command = (ICommand) args[0];
         Exception exception = (Exception) args[1];
 
-        return new DefaultExceptionHandlerCommand(Command, exception);
+        throw exception;
     }
 }
