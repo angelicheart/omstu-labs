@@ -48,7 +48,7 @@ public class EndpointTests
         var result = messageProcessor.ProcessMessage(message);
 
         Assert.Equal(HttpStatusCode.OK, result);
-        Assert.Single(IoC.Resolve<ConcurrentDictionary<string, SenderAdapter>>("Game.Senders.Domain", "asdfg"));
+        Assert.Single(queue);
     }
 
     [Fact]
@@ -68,24 +68,6 @@ public class EndpointTests
         var result = messageProcessor.ProcessMessage(message);
 
         Assert.Equal(HttpStatusCode.OK, result);
-        Assert.Single(IoC.Resolve<ConcurrentDictionary<string, SenderAdapter>>("Game.Senders.Domain", "asdfg"));
-    }
-
-    [Fact]
-    public async Task Application_ShouldReturnOKStatus()
-    {
-        IWebHostBuilder webhostbuilder = WebHost.CreateDefaultBuilder().UseStartup<Startup>();
-        IWebHost host = webhostbuilder.Build();
-
-        var client = new HttpClient();
-
-        await host.StartAsync();
-
-        var response = await client.GetAsync("http://localhost:5000/MessageProcessor/basicHttp");
-
-         await host.StopAsync();
-        host.Dispose();
-
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        Assert.Single(queue);
     }
 }

@@ -7,3 +7,5 @@ global using System.Runtime.Serialization;
 global using Microsoft.AspNetCore.Builder;
 global using System.Collections.Generic;
 global using System.Diagnostics.CodeAnalysis;
+global using Microsoft.AspNetCore;
+
