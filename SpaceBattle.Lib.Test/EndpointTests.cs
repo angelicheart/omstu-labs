@@ -70,15 +70,10 @@ public class EndpointTests
         Assert.Equal(HttpStatusCode.OK, result);
         Assert.Single(IoC.Resolve<ConcurrentDictionary<string, SenderAdapter>>("Game.Senders.Domain", "asdfg"));
     }
-    
+
     [Fact]
     public async Task Application_ShouldReturnOKStatus()
     {
-        var message = new Message {
-            CommandName = "fire",
-            GameID = "asdfg",
-        };
-
         IWebHostBuilder webhostbuilder = WebHost.CreateDefaultBuilder().UseStartup<Startup>();
         IWebHost host = webhostbuilder.Build();
 
