@@ -1,24 +1,42 @@
 namespace SpaceBattle.Lib.Test;
 
-public class HandlerTests
+public class HandlerCommandTests
 {
-    string exception_message = "SOLID.Exception";
+    const int n_threads = 3;
 
-    public HandlerTests()
+    public HandlerCommandTests()
     {
-        new InitScopeBasedIoCImplementationCommand().Execute();
+        new Hwdtech.Ioc.InitScopeBasedIoCImplementationCommand().Execute();
         IoC.Resolve<Hwdtech.ICommand>("Scopes.Current.Set", IoC.Resolve<object>("Scopes.New", IoC.Resolve<object>("Scopes.Root"))).Execute();
 
-        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Threads.CreateAndStart", (object[] args) =>
-        { 
-            Mock<Exception> ex = new(); 
-            return ex.Object; 
-        }).Execute();
-        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Threads.SoftStop", (object[] args) =>
-        { 
-            Mock<Exception> ex = new(); 
-            return ex.Object; 
-        }).Execute();
+        var start = new Mock<SpaceBattle.Lib.ICommand>();
+        start.Setup(c => c.Execute());
+
+        var StartThreadStrategy = new Mock<IStrategy>();
+        StartThreadStrategy.Setup(c => c.Execute(It.IsAny<object[]>())).Throws(new Exception());
+
+        var send = new Mock<SpaceBattle.Lib.ICommand>();
+        send.Setup(c => c.Execute());
+
+        var SendStrategy = new Mock<IStrategy>();
+        SendStrategy.Setup(c => c.Execute(It.IsAny<object[]>())).Throws(new Exception());
+
+        var stop = new Mock<SpaceBattle.Lib.ICommand>();
+        stop.Setup(c => c.Execute());
+
+        var StopThreadStrategy = new Mock<IStrategy>();
+        StopThreadStrategy.Setup(c => c.Execute(It.IsAny<object[]>())).Returns(stop.Object);
+
+        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Threads.CreateAndStart", (object[] args) => StartThreadStrategy.Object.Execute(args)).Execute();
+        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Threads.SoftStop", (object[] args) => StopThreadStrategy.Object.Execute(args)).Execute();
+        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Senders.Send", (object[] args) => SendStrategy.Object.Execute(args)).Execute();
+
+        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "StartServerCommand", (object[] args) => new ActionCommand(() => {
+            new StartServerCommand((int) args[0]).Execute();
+        })).Execute();
+        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "StopServerCommand", (object[] args) => new ActionCommand(() => {
+            new StopServerCommand((int) args[0]).Execute();
+        })).Execute();
         IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "CatchException", (object[] args) => new ActionCommand(() => {
             new HandlerCommand((string) args[0]).Execute();
         })).Execute();
@@ -27,27 +45,27 @@ public class HandlerTests
     [Fact]
     public void HandlerCommandTest()
     {
-        var handler = new HandlerCommand(exception_message);
-        handler.Execute();
-    }
-
-    [Fact]
-    public void CatchExceptionTest()
-    {
-        IoC.Resolve<ICommand>("CatchException", exception_message).Execute();
-    }
-
-    [Fact]
-    public void StartServerCommandException()
-    {
-        var cmd = new StopServerCommand(5);
+        var cmd = new HandlerCommand("Exception");
         cmd.Execute();
+        var str = File.ReadLines("Exceptions.txt").ToList().Last();
+        Assert.Equal("Exception", str);
     }
 
     [Fact]
-    public void StopServerCommandException()
+    public void StartServerExceptionTest()
     {
-        var cmd = new StopServerCommand(5);
-        cmd.Execute();
+        IoC.Resolve<ICommand>("StartServerCommand", n_threads).Execute();
+
+        var str = File.ReadLines("Exceptions.txt").ToList().Last();
+        Assert.Equal("Start Thread, Exception of type 'System.Exception' was thrown.", str);
+    }
+
+    [Fact]
+    public void StopServerExceptionTest()
+    {
+        IoC.Resolve<ICommand>("StopServerCommand", n_threads).Execute();
+        
+        var str = File.ReadLines("Exceptions.txt").ToList().Last();
+        Assert.Equal("Soft Stop Thread, Exception of type 'System.Exception' was thrown.", str);
     }
 }
