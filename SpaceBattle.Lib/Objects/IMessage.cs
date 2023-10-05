@@ -1,5 +1,3 @@
-using System.Globalization;
-
 namespace SpaceBattle.Lib;
 
 public interface IMessage
