@@ -1,6 +1,3 @@
-using System.Data;
-using System.Security.Cryptography;
-
 namespace SpaceBattle.Lib;
 
 public class CreateCommandStrategy : IStrategy
@@ -9,7 +6,7 @@ public class CreateCommandStrategy : IStrategy
     {
         IMessage message = (IMessage) args[0];
 
-        command = //Resolve
+        var command = IoC.Resolve<ICommand>("Command." + message.CmdType);
         return command;
     }
 }

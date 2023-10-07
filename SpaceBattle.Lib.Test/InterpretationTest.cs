@@ -7,6 +7,8 @@ public class InterpretationTest
     {
         new InitScopeBasedIoCImplementationCommand().Execute();
         IoC.Resolve<Hwdtech.ICommand>("Scopes.Current.Set", IoC.Resolve<object>("Scopes.New", IoC.Resolve<object>("Scopes.Root"))).Execute();
+        
+        var cmd = new Mock<ICommand>();
 
         /*
         Реализована команда, которая извлекает не блокируемым образом из очереди сообщение, создает команду интерпретации сообщения и складывает ее в очередь соответствующей игры.
@@ -17,6 +19,8 @@ public class InterpretationTest
         IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "GetGameQueue", (object[] args) => currentGames).Execute();
         IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "PushInQueue", (object[] args) => new InQueueStrategy().Execute(args)).Execute();
         IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "GetQueue", (object[] args) => new GetQueueStrategy().Execute(args)).Execute();
+        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "CreateCommand", (object[] args) => new CreateCommandStrategy().Execute()).Execute();
+        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Command.Move", (object[] args) => cmd.Object).Execute();
     }
 
     [Fact]
@@ -24,8 +28,13 @@ public class InterpretationTest
     {
         Mock<IMessage> message = new Mock<IMessage>();
 
+        currentGames.Add(10, new Queue<ICommand>());
+
         message.SetupGet(x => x.CmdType).Returns("Move");
-        message.SetupGet(x => x.GameID).Returns(0);
+        message.SetupGet(x => x.GameID).Returns(10);
         message.SetupGet(x => x.ItemID).Returns(0);
+
+        var intcmd = new InterpretationCommand(message.Object);
+        intcmd.Execute();
     }
 }
