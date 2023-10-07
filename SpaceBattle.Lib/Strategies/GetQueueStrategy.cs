@@ -9,7 +9,7 @@ public class GetQueueStrategy : IStrategy
 
         Queue<ICommand> queue;
 
-        IoC.Resolve<"получение очереди из игры по айдишник">;
+        IoC.Resolve<IDictionary<int, Queue<ICommand>>>("GetGameQueue").TryGetValue(id, out queue);
 
         return queue;
     }

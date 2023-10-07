@@ -2,6 +2,7 @@ namespace SpaceBattle.Lib;
 
 public class InterpretationTest
 {
+    Dictionary<int, Queue<ICommand>> currentGames = new Dictionary<int, Queue<ICommand>>();
     public InterpretationTest()
     {
         new InitScopeBasedIoCImplementationCommand().Execute();
@@ -13,7 +14,18 @@ public class InterpretationTest
         Команда интерпретации должна создавать команду, соответствующую сообщению и ставить эту команду в очередь игры.
         */
 
+        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "GetGameQueue", (object[] args) => currentGames).Execute();
         IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "PushInQueue", (object[] args) => new InQueueStrategy().Execute(args)).Execute();
         IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "GetQueue", (object[] args) => new GetQueueStrategy().Execute(args)).Execute();
+    }
+
+    [Fact]
+    public void SomePositiveTest()
+    {
+        Mock<IMessage> message = new Mock<IMessage>();
+
+        message.SetupGet(x => x.CmdType).Returns("Move");
+        message.SetupGet(x => x.GameID).Returns(0);
+        message.SetupGet(x => x.ItemID).Returns(0);
     }
 }
