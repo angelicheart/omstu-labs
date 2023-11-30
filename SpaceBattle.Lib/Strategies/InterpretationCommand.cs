@@ -2,7 +2,7 @@ namespace SpaceBattle.Lib;
 
 public class InterpretationCommand : ICommand
 {
-    IMessage message;
+    private readonly IMessage message;
 
     public InterpretationCommand(IMessage msg)
     {
@@ -11,8 +11,8 @@ public class InterpretationCommand : ICommand
 
     public void Execute()
     {
-        // создание команды из сообщения
+        var cmd = IoC.Resolve<ICommand>("CreateCommand", message);
 
-        // закидывание команды в очередь
+        IoC.Resolve<ICommand>("PushInQueue", message.GameID, cmd).Execute();
     }
 }

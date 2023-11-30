@@ -7,7 +7,7 @@ public class InQueueStrategy : IStrategy
         int id = (int) args[0];
         ICommand cmd = (ICommand) args[1];
 
-        Queue<ICommand> queue = IoC.Resolve<Queue<ICommand>>("GetQueue", id);
+        var queue = IoC.Resolve<Queue<ICommand>>("GetQueue", id);
         return new ActionCommand(() => { queue.Enqueue(cmd); });
     }
 }
