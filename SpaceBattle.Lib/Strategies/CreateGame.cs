@@ -11,7 +11,9 @@ public class CreateGame : IStrategy
 
     public object Execute(params object[] args) 
     {
-        // realization
-        return 0;
+        Queue<ICommand> queue = new Queue<ICommand>();
+        var scope = new InitializeScope().Execute(id, quant);
+
+        return IoC.Resolve<ICommand>("GameCommand", scope, queue);
     }
 }
