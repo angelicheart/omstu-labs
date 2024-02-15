@@ -5,7 +5,7 @@ public class CreateGameStrategy : IStrategy
 {
     int quantum;
     string scopeid;
-    public CreateGameStrategy(string scopeid, int quantum = 500)
+    public CreateGameStrategy(string scopeid, int quantum)
     {
         this.quantum = quantum;
         this.scopeid = scopeid;
