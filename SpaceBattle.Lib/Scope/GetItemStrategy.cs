@@ -13,6 +13,7 @@ public class GetItemStrategy : IStrategy
         {
             return obj;
         }
+        
         throw new Exception();
     }
 }

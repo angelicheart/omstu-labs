@@ -1,17 +1,14 @@
-using Hwdtech;
-
-
 namespace SpaceBattle.Lib;
 
 public class DeleteItemCommand : ICommand
 {
-    string key;
-    public DeleteItemCommand(string _key)
+    readonly string id;
+    public DeleteItemCommand(string id)
     {
-        key = _key;
+        this.id = id;
     }
     public void Execute()
     {
-        IoC.Resolve<Dictionary<string, IUObject>>("General.Objects").Remove(key);
+        IoC.Resolve<Dictionary<string, IUObject>>("General.Objects").Remove(id);
     }
 }

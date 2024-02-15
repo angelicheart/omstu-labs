@@ -11,7 +11,6 @@ public class InitializeScopeStrategy : IStrategy
 
         IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "QueueDequeue", (Func<object[], ICommand>)(args => (ICommand)new FromQueueStrategy().Execute((Queue<ICommand>)args[0]))).Execute();
         IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "QueueEnqueue", (Func<object[], ICommand>)(args => new InQueueCommand((Queue<ICommand>)args[0], (ICommand)args[1]))).Execute();
-
         IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "GetQuantum", (Func<object[], object>)(args => (int)_args[1])).Execute();
 
         Dictionary<string, IUObject> objects = new Dictionary<string, IUObject>();
