@@ -46,8 +46,6 @@ public class ScopeTests
         var CreateGameCommand = IoC.Resolve<ICommand>("Game.CreateNew", "1", quant);
         CreateGameCommand.Execute();
 
-        var scope = new InitializeScope().Execute("2");
-
         Assert.True(scopes.Count() == 1);
         Assert.True(IoC.Resolve<Dictionary<string, IUObject>>("General.Objects").Count() == 0);
 
