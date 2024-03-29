@@ -9,6 +9,6 @@ public class DeleteGameCommand : ICommand
     }
     public void Execute()
     {
-        IoC.Resolve<ICommand>("Game.DeleteScope", id).Execute();
+        IoC.Resolve<ICommand>("Scope.Delete", id).Execute();
     }
 }

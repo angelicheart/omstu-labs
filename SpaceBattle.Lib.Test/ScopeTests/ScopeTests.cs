@@ -2,33 +2,33 @@ namespace SpaceBattle.Lib.Test;
 
 public class ScopeTests
 {
-    Dictionary<string, object> scopes = new Dictionary<string, object>();
-    int quant = 256;
+    readonly Dictionary<string, object> scopes = new();
+    readonly int quant = 256;
     public ScopeTests()
     {
         new InitScopeBasedIoCImplementationCommand().Execute();
         IoC.Resolve<Hwdtech.ICommand>("Scopes.Current.Set", IoC.Resolve<object>("Scopes.New", IoC.Resolve<object>("Scopes.Root"))).Execute();
 
-        var GetScopeStrategy = new Mock<IStrategy>();
-        GetScopeStrategy.Setup(s => s.Execute(It.IsAny<object[]>())).Returns((object[] args) => scopes[(string)args[0]]); 
+        var getScopeStrategy = new Mock<IStrategy>();
+        getScopeStrategy.Setup(s => s.Execute(It.IsAny<object[]>())).Returns((object[] args) => scopes[(string)args[0]]); 
 
-        var NewScopeToDictStrategy = new Mock<IStrategy>();
-        NewScopeToDictStrategy.Setup(s => s.Execute(It.IsAny<object[]>())).Returns((object[] args) =>
+        var newScopeStrategy = new Mock<IStrategy>();
+        newScopeStrategy.Setup(s => s.Execute(It.IsAny<object[]>())).Returns((object[] args) =>
         {
             scopes.Add((string)args[0], IoC.Resolve<object>("Scopes.New", IoC.Resolve<object>("Scopes.Current")));
             return scopes[(string)args[0]];
         });
 
-        var DeleteScopeFromDictStrategy = new Mock<IStrategy>();
-        DeleteScopeFromDictStrategy.Setup(s => s.Execute(It.IsAny<object[]>())).Returns((object[] args) => new ActionCommand(() => {
+        var deleteScopeStrategy = new Mock<IStrategy>();
+        deleteScopeStrategy.Setup(s => s.Execute(It.IsAny<object[]>())).Returns((object[] args) => new ActionCommand(() => {
             scopes.Remove((string)args[0]);
         }));
 
-        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.GetScope", (object[] args) => GetScopeStrategy.Object.Execute(args)).Execute();
-        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.NewScope", (object[] args) => NewScopeToDictStrategy.Object.Execute(args)).Execute();
-        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.DeleteScope", (object[] args) => DeleteScopeFromDictStrategy.Object.Execute(args)).Execute();
-        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.CreateNew", (object[] args) => new CreateGameStrategy((string)args[0], (int)args[1]).Execute()).Execute();
-        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.DeleteGame", (object[] args) => new ActionCommand(() => {
+        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Get.Scope", (object[] args) => getScopeStrategy.Object.Execute(args)).Execute();
+        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Scope.Create", (object[] args) => newScopeStrategy.Object.Execute(args)).Execute();
+        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Scope.Delete", (object[] args) => deleteScopeStrategy.Object.Execute(args)).Execute();
+        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Create", (object[] args) => new CreateGameStrategy((string)args[0], (int)args[1]).Execute()).Execute();
+        IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Game.Delete", (object[] args) => new ActionCommand(() => {
             new DeleteGameCommand((string) args[0]).Execute();
         })).Execute();
         IoC.Resolve<Hwdtech.ICommand>("IoC.Register", "Commands.GameCommand", (object[] args) => new ActionCommand(() =>
@@ -41,17 +41,15 @@ public class ScopeTests
     [Fact]
     public void CreateNewGameTest()
     {
-        IoC.Resolve<object>("Game.NewScope", "1");
+        IoC.Resolve<object>("Scope.Create", "1");
 
-        var CreateGameCommand = IoC.Resolve<ICommand>("Game.CreateNew", "1", quant);
-        CreateGameCommand.Execute();
+        var command = IoC.Resolve<ICommand>("Game.Create", "1", quant);
+        command.Execute();
 
-        Assert.True(scopes.Count() == 1);
-        Assert.True(IoC.Resolve<Dictionary<string, IUObject>>("General.Objects").Count() == 0);
-
-        Assert.Equal(quant, IoC.Resolve<int>("GetQuantum"));
-
-        Assert.Throws<Exception>(() => IoC.Resolve<ICommand>("QueueDequeue", new Queue<ICommand>()));
+        Assert.True(scopes.Count == 1);
+        Assert.True(IoC.Resolve<Dictionary<string, IUObject>>("Get.Objects").Count == 0);
+        Assert.Equal(quant, IoC.Resolve<int>("Get.Quantum"));
+        Assert.Throws<Exception>(() => IoC.Resolve<ICommand>("Queue.Dequeue", new Queue<ICommand>()));
     }
 
     [Fact]
@@ -59,38 +57,38 @@ public class ScopeTests
     {
         for (int i = 1; i < 5; i++) 
         {
-            IoC.Resolve<object>("Game.NewScope", i.ToString());
-            var CreateGameCommand = IoC.Resolve<ICommand>("Game.CreateNew", i.ToString(), quant);
-            CreateGameCommand.Execute();
+            IoC.Resolve<object>("Scope.Create", i.ToString());
+            var command = IoC.Resolve<ICommand>("Game.Create", i.ToString(), quant);
+            command.Execute();
         }
-        Assert.True(scopes.Count() == 4);
+        Assert.True(scopes.Count == 4);
     }
 
     [Fact]
-    public void DeleteGameNegativeTest()
+    public void DeleteUnexistGameTest()
     {
-        IoC.Resolve<object>("Game.NewScope", "1");
+        IoC.Resolve<object>("Scope.Create", "1");
 
-        var CreateGameCommand = IoC.Resolve<ICommand>("Game.CreateNew", "1", quant);
-        var DeleteGameCommand = IoC.Resolve<ICommand>("Game.DeleteGame", "2");
+        var createCommand = IoC.Resolve<ICommand>("Game.Create", "1", quant);
+        var deleteCommand = IoC.Resolve<ICommand>("Game.Delete", "2");
 
-        CreateGameCommand.Execute();
-        DeleteGameCommand.Execute();
+        createCommand.Execute();
+        deleteCommand.Execute();
 
-        Assert.True(scopes.Count() == 1);
+        Assert.True(scopes.Count == 1);
     }
 
     [Fact]
-    public void DeleteGamePositiveTest()
+    public void DeleteExistGameTest()
     {
-        IoC.Resolve<object>("Game.NewScope", "1");
+        IoC.Resolve<object>("Scope.Create", "1");
 
-        var CreateGameCommand = IoC.Resolve<ICommand>("Game.CreateNew", "1", quant);
-        var DeleteGameCommand = IoC.Resolve<ICommand>("Game.DeleteGame", "1");
-        DeleteGameCommand.Execute();
+        var createCommand = IoC.Resolve<ICommand>("Game.Create", "1", quant);
+        var deleteCommand = IoC.Resolve<ICommand>("Game.Delete", "1");
+        deleteCommand.Execute();
 
-        CreateGameCommand.Execute();
+        createCommand.Execute();
 
-        Assert.True(scopes.Count() == 0);
+        Assert.True(scopes.Count == 0);
     }
 }
