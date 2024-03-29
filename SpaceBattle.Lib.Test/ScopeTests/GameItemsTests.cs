@@ -67,5 +67,3 @@ public class GameItemsTests
         Assert.Throws<Exception>(() => IoC.Resolve<IUObject>("Get.Item", "0"));
     }
 }
-
-

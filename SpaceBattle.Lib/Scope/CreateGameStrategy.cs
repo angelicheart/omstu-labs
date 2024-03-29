@@ -4,11 +4,13 @@ public class CreateGameStrategy : IStrategy
 {
     int quant;
     string id;
+
     public CreateGameStrategy(string id, int quant)
     {
         this.quant = quant;
         this.id = id;
     }
+    
     public object Execute(params object[] args)
     {
         Queue<ICommand> queue = new Queue<ICommand>();
