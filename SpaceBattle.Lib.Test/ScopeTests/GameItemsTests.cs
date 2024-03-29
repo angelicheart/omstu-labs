@@ -4,6 +4,7 @@ public class GameItemsTests
 {
     readonly Dictionary<string, object> scopes = new();
     readonly int quant = 256;
+    
     public GameItemsTests()
     {
         new InitScopeBasedIoCImplementationCommand().Execute();
