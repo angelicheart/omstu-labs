@@ -2,8 +2,8 @@ namespace SpaceBattle.Lib;
 
 public class CreateGameStrategy : IStrategy
 {
-    int quant;
-    string id;
+    readonly int quant;
+    readonly string id;
 
     public CreateGameStrategy(string id, int quant)
     {

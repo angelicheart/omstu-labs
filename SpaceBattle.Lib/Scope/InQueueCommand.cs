@@ -2,8 +2,8 @@ namespace SpaceBattle.Lib;
 
 public class InQueueCommand : ICommand
 {
-    Queue<ICommand> queue;
-    ICommand command;
+    readonly Queue<ICommand> queue;
+    readonly ICommand command;
 
     public InQueueCommand(Queue<ICommand> queue, ICommand command)
     {

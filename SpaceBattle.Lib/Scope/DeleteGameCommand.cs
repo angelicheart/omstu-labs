@@ -2,7 +2,7 @@ namespace SpaceBattle.Lib;
 
 public class DeleteGameCommand : ICommand
 {
-    string id;
+    readonly string id;
 
     public DeleteGameCommand(string id)
     {
