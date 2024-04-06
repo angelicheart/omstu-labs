@@ -29,12 +29,12 @@ public class GameItemsTests
     {
         var obj = new Mock<IUObject>();
 
-        var command = IoC.Resolve<ICommand>("Game.Create", "1", quant);
+        ICommand command = IoC.Resolve<ICommand>("Game.Create", "1", quant);
         command.Execute();
 
         IoC.Resolve<Dictionary<string, IUObject>>("Get.Objects").Add("0", obj.Object);
 
-        var resolvedObj = IoC.Resolve<IUObject>("Get.Item", "0");
+        IUObject resolvedObj = IoC.Resolve<IUObject>("Get.Item", "0");
 
         Assert.Equal(obj.Object, resolvedObj);
     }
@@ -43,14 +43,14 @@ public class GameItemsTests
     public void DeleteItemStrategyTest()
     {
         var mockObj = new Mock<IUObject>();
-        var command = IoC.Resolve<ICommand>("Game.Create", "1", quant);
+        ICommand command = IoC.Resolve<ICommand>("Game.Create", "1", quant);
         command.Execute();
 
         IoC.Resolve<Dictionary<string, IUObject>>("Get.Objects").Add("0", mockObj.Object);
-        Assert.True(IoC.Resolve<Dictionary<string, IUObject>>("Get.Objects").Count() == 1);
+        Assert.True(IoC.Resolve<Dictionary<string, IUObject>>("Get.Objects").Count == 1);
 
         IoC.Resolve<ICommand>("Item.Remove", "0").Execute();
-        Assert.True(IoC.Resolve<Dictionary<string, IUObject>>("Get.Objects").Count() == 0);
+        Assert.True(IoC.Resolve<Dictionary<string, IUObject>>("Get.Objects").Count == 0);
     }
 
     [Fact]
@@ -58,7 +58,7 @@ public class GameItemsTests
     {
         var mockObj = new Mock<IUObject>();
 
-        var command = IoC.Resolve<ICommand>("Game.Create", "1", quant);
+        ICommand command = IoC.Resolve<ICommand>("Game.Create", "1", quant);
         command.Execute();
 
         IoC.Resolve<Dictionary<string, IUObject>>("Get.Objects").Add("0", mockObj.Object);

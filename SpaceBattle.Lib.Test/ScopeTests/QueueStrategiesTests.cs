@@ -27,10 +27,10 @@ public class QueueStrategiesTests
     [Fact]
     public void EnqueueTest()
     {
-        var queue = new Queue<ICommand>();
+        Queue<ICommand> queue = new();
         var cmd = new Mock<ICommand>();
 
-        var command = IoC.Resolve<ICommand>("Game.Create", "1", quant);
+        ICommand command = IoC.Resolve<ICommand>("Game.Create", "1", quant);
         command.Execute();
 
         IoC.Resolve<ICommand>("Queue.Enqueue", queue, cmd.Object).Execute();
@@ -43,10 +43,10 @@ public class QueueStrategiesTests
     [Fact]
     public void DequeueTest()
     {
-        var queue = new Queue<ICommand>();
+        Queue<ICommand> queue = new();
         var cmd = new Mock<ICommand>();
 
-        var command = IoC.Resolve<ICommand>("Game.Create", "1", quant);
+        ICommand command = IoC.Resolve<ICommand>("Game.Create", "1", quant);
         command.Execute();
 
         IoC.Resolve<ICommand>("Queue.Enqueue", queue, cmd.Object).Execute();

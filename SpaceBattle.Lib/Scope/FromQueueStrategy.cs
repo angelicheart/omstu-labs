@@ -5,16 +5,10 @@ public class FromQueueStrategy : IStrategy
 {
     public object Execute(params object[] args)
     {
-        var queue = (Queue<ICommand>)args[0];
+        Queue<ICommand> queue = (Queue<ICommand>) args[0];
+        queue.TryDequeue(out ICommand command);
 
-        if (!queue.TryDequeue(out ICommand command))
-        {
-            throw new Exception();
-        }
-        
-        else
-        {
-            return command;
-        }
+        if (command != null) return command;
+        throw new Exception();
     }
 }

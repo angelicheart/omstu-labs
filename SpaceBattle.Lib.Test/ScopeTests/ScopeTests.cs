@@ -43,11 +43,13 @@ public class ScopeTests
     {
         IoC.Resolve<object>("Scope.Create", "1");
 
-        var command = IoC.Resolve<ICommand>("Game.Create", "1", quant);
+        ICommand command = IoC.Resolve<ICommand>("Game.Create", "1", quant);
         command.Execute();
 
+        Dictionary<string, IUObject> objects = IoC.Resolve<Dictionary<string, IUObject>>("Get.Objects");
+
         Assert.True(scopes.Count == 1);
-        Assert.True(IoC.Resolve<Dictionary<string, IUObject>>("Get.Objects").Count == 0);
+        Assert.True(objects.Count == 0);
         Assert.Equal(quant, IoC.Resolve<int>("Get.Quantum"));
         Assert.Throws<Exception>(() => IoC.Resolve<ICommand>("Queue.Dequeue", new Queue<ICommand>()));
     }
@@ -58,7 +60,7 @@ public class ScopeTests
         for (int i = 1; i < 5; i++) 
         {
             IoC.Resolve<object>("Scope.Create", i.ToString());
-            var command = IoC.Resolve<ICommand>("Game.Create", i.ToString(), quant);
+            ICommand command = IoC.Resolve<ICommand>("Game.Create", i.ToString(), quant);
             command.Execute();
         }
         Assert.True(scopes.Count == 4);
@@ -69,8 +71,8 @@ public class ScopeTests
     {
         IoC.Resolve<object>("Scope.Create", "1");
 
-        var createCommand = IoC.Resolve<ICommand>("Game.Create", "1", quant);
-        var deleteCommand = IoC.Resolve<ICommand>("Game.Delete", "2");
+        ICommand createCommand = IoC.Resolve<ICommand>("Game.Create", "1", quant);
+        ICommand deleteCommand = IoC.Resolve<ICommand>("Game.Delete", "2");
 
         createCommand.Execute();
         deleteCommand.Execute();
@@ -83,10 +85,10 @@ public class ScopeTests
     {
         IoC.Resolve<object>("Scope.Create", "1");
 
-        var createCommand = IoC.Resolve<ICommand>("Game.Create", "1", quant);
-        var deleteCommand = IoC.Resolve<ICommand>("Game.Delete", "1");
-        deleteCommand.Execute();
+        ICommand createCommand = IoC.Resolve<ICommand>("Game.Create", "1", quant);
+        ICommand deleteCommand = IoC.Resolve<ICommand>("Game.Delete", "1");
 
+        deleteCommand.Execute();
         createCommand.Execute();
 
         Assert.True(scopes.Count == 0);

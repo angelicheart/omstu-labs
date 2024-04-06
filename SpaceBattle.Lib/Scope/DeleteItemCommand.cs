@@ -11,6 +11,7 @@ public class DeleteItemCommand : ICommand
     
     public void Execute()
     {
-        IoC.Resolve<Dictionary<string, IUObject>>("Get.Objects").Remove(id);
+        Dictionary<string, IUObject> objects = IoC.Resolve<Dictionary<string, IUObject>>("Get.Objects");
+        objects.Remove(id);
     }
 }

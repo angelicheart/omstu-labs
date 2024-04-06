@@ -13,9 +13,9 @@ public class CreateGameStrategy : IStrategy
     
     public object Execute(params object[] args)
     {
-        Queue<ICommand> queue = new Queue<ICommand>();
-        object newscope = new InitializeScopeStrategy().Execute(id, quant);
+        Queue<ICommand> queue = new();
+        object newScope = new InitializeScopeStrategy().Execute(id, quant);
 
-        return IoC.Resolve<ICommand>("Commands.GameCommand", newscope, queue);
+        return IoC.Resolve<ICommand>("Commands.GameCommand", newScope, queue);
     }
 }
